@@ -1,0 +1,15 @@
+---
+layout: todo
+---
+- [ ] Fill and flush out projects
+    - [ ] Autotrader
+    - [ ] NBA Finals 
+    - [ ] DESFB Climate
+    - [ ] Destiny 2 Companion ?
+- [ ] Add a REST API Site
+    - [ ] Look into Swagger
+- [ ] Convert templated HTML for Jekyll use
+- [ ] Redo JS, Images, and SCSS
+    - [ ] JS
+    - [ ] Images
+    - [ ] SCSS
