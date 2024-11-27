@@ -3,7 +3,7 @@ import Link from 'next/link'
 export default function Nav() {
     return (
         <div>
-            <nav className="sticky top-0 w-full bg-white p-4 shadow-none hover:shadow-md z-50">
+            <nav className="sticky top-0 w-full bg-white p-4 z-50">
                 <ul className="flex justify-between">
                     <li><Link href="#Intro">Intro</Link></li>
                     <li><Link href="#Work">Work</Link></li>
