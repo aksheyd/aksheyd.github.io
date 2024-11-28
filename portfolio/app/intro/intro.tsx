@@ -4,14 +4,14 @@ import React, { useEffect } from 'react';
 import Animate from '../text/textAnimation';
 import { useRef } from 'react';
 import { gsap } from 'gsap';
-import { ScrollTrigger} from 'gsap/ScrollTrigger';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
+import './intro.css';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 export default function Intro() {
   let hasRun = false;
-  const container = useRef(null);
 
   function dynamicIntro() {
     if (!hasRun) {
@@ -26,26 +26,29 @@ export default function Intro() {
   useGSAP(() => {
     dynamicIntro();
 
-    const sections = gsap.utils.toArray<Element>('.section');
-
-    sections.forEach((section: Element) =>
-      gsap.to(section, {
-        zIndex: 1,
-        scrollTrigger: {
-          trigger: section,
-          start: 'bottom bottom',
-          end: 'top 20%',
-          scrub: true,
-        }
-      })
-    );
-  }, {scope: container});
+    gsap.utils.toArray<Element>('.comparisonSection')
+      .forEach((section: Element) => {
+        let tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: "center center",
+            end: () => "+=" + (section as HTMLElement).offsetWidth,
+            scrub: true,
+            pin: true,
+            anticipatePin: 1
+          },
+          defaults: { ease: "none" }
+        });
+        tl.fromTo(section.querySelector('.after'), { xPercent: 100, x: 0 }, { xPercent: 0 })
+          .fromTo(section.querySelector('.after section'), { xPercent: -100, x: 0 }, { xPercent: 0 }, 0);
+      });
+  });
 
   return (
-    <div ref={container}>
-      <div id="Intro" className="dyn_intro relative min-h-screen w-[200vw] bg-white snap-center">
+    <div>
+      <section id="Intro" className="comparisonSection relative min-h-screen w-[200vw] bg-white">
         <div className="flex select-none items-center justify-left w-[100vw] min-h-screen bg-white">
-          <div className="text-center">
+          <div className="comparison text-center">
             <h1 className="text-9xl font-bold tracking-tight text-left">
               <Animate text="Akshey" delay={200} />
             </h1>
@@ -53,13 +56,23 @@ export default function Intro() {
               <Animate text="Deokule" delay={150} />
             </h1>
           </div>
-
-          {/* <div>
-            Woah
-          </div> */}
-
         </div>
-      </div>
+
+        <div className="after">
+          <section>
+            <div className="flex select-none items-center justify-left w-[100vw] min-h-screen bg-purple-200">
+              <div className="text-center">
+                <h1 className="text-9xl font-bold tracking-tight text-left">
+                  Softare
+                </h1>
+                <h1 className="text-9xl font-bold tracking-tight text-left mt-2">
+                  Engineer
+                </h1>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
     </div>
-  );
+  )
 }
