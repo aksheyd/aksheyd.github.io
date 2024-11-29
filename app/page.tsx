@@ -1,3 +1,5 @@
+import API from "./api/api";
+import Contact from "./contact/contact";
 import Intro from "./intro/intro";
 import Nav from "./nav/nav";
 import Work from "./work/work";
@@ -9,6 +11,8 @@ export default function Page() {
             <Nav/>
             <Intro/>
             <Work/>
+            <Contact/>
+            <API/>
         </div>
     )
 }

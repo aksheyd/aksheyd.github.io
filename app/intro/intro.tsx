@@ -61,7 +61,7 @@ export default function Intro() {
 
         <div className="after">
           <section>
-            <div className="flex select-none items-center justify-left w-[100vw] min-h-screen bg-purple-200">
+            <div className="flex select-none items-center justify-left w-[100vw] min-h-screen bg-gradient-to-r from-indigo-200 via-purple-200 to-pink-200">
               <div className="text-center">
                 <h1 className="text-9xl font-bold tracking-tight text-left">
                   Software

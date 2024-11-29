@@ -21,7 +21,6 @@ const config: Config = {
     require('@tailwindcss/typography'),
     require('@tailwindcss/aspect-ratio'),
     require('@tailwindcss/line-clamp'),
-    require('tailwindcss-filters'),
   ],
 }
 export default config

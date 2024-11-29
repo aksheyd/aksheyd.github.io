@@ -58,3 +58,10 @@ REST API & Swagger UI:
 	•	Focus on one feature at a time. Get the CPU/GPU toggle working before moving to scroll effects.
 
 This project will touch multiple technologies and concepts, giving you a hands-on way to learn. Excited to see what you create—let me know if you want more focused advice on any part!
+
+
+
+
+
+- { } Navbar is floating above everything and blends
+- { } Observer for smooth scrolling below intro (?)
