@@ -15,17 +15,18 @@ export default function Intro() {
 
   function dynamicIntro() {
     if (!hasRun) {
-      // set first slide to left hand most side
       gsap.fromTo(".dyn_intro",
-        { xPercent: 75 },
+        { xPercent: 125 },
         { xPercent: 0 }).timeScale(0.4);
     }
     hasRun = true;
   }
 
-  useGSAP(() => {
-    dynamicIntro();
+	useGSAP(() => {
+		dynamicIntro();
+	});
 
+  useGSAP(() => {
     gsap.utils.toArray<Element>('.comparisonSection')
       .forEach((section: Element) => {
         let tl = gsap.timeline({
@@ -47,7 +48,7 @@ export default function Intro() {
   return (
     <div>
       <section id="Intro" className="comparisonSection relative min-h-screen w-[200vw] bg-white">
-        <div className="flex select-none items-center justify-left w-[100vw] min-h-screen bg-white">
+        <div className="dyn_intro flex select-none items-center justify-left w-[100vw] min-h-screen bg-white">
           <div className="comparison text-center">
             <h1 className="text-9xl font-bold tracking-tight text-left">
               <Animate text="Akshey" delay={200} />
@@ -63,7 +64,7 @@ export default function Intro() {
             <div className="flex select-none items-center justify-left w-[100vw] min-h-screen bg-purple-200">
               <div className="text-center">
                 <h1 className="text-9xl font-bold tracking-tight text-left">
-                  Softare
+                  Software
                 </h1>
                 <h1 className="text-9xl font-bold tracking-tight text-left mt-2">
                   Engineer
