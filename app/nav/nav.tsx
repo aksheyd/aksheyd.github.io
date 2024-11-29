@@ -8,7 +8,6 @@ export default function Nav() {
     const [isThere, handleGettingThere] = useState(false);
 
     useEffect(() => {
-        console.log("ScrollY:", window.scrollY);
         const handleScroll = () => {
             if (window.scrollY > 3500) {
                 handleGettingThere(true);
