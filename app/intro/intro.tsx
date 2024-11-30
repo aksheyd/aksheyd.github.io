@@ -22,11 +22,10 @@ export default function Intro() {
     hasRun = true;
   }
 
-	useGSAP(() => {
-		dynamicIntro();
-	});
 
   useGSAP(() => {
+    dynamicIntro();
+
     gsap.utils.toArray<Element>('.comparisonSection')
       .forEach((section: Element) => {
         let tl = gsap.timeline({

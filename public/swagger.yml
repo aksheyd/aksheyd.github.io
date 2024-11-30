@@ -1,0 +1,24 @@
+openapi: 3.0.0
+info:
+  title: Sample API
+  description: blank
+  version: 0.0.1
+
+servers:
+  - url: http://localhost:3000/api
+    description: Main 
+
+paths:
+  /test:
+    get:
+      summary: Returns a test request
+      description: Testing!
+      responses:
+        "200": 
+          description: A JSON message saying Hi
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
