@@ -3,7 +3,7 @@ import projects from './projects'
 
 export default function Work() {
   return (
-    <div id="Work" className="min-h-screen p-6 bg-gray-200">
+    <div id="Work" className="min-h-screen p-6 bg-white border-color-blue-100">
       <Divider />
       <h1 className="text-5xl font-thin tracking-wide">Projects</h1>
       <Divider />

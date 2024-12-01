@@ -25,7 +25,7 @@ export default function Nav() {
 
     return (
         <div>
-            <nav className={`fixed top-0 w-full ${isThere ? "bg-gradient-to-r from-indigo-200 via-purple-200 to-pink-200" : "backdrop-blur-xl"} p-4 z-50`}>
+            <nav className={`fixed top-0 w-full ${isThere ? "bg-gradient-to-r from-indigo-200 via-purple-200 to-pink-200 backdrop-blur-sm backdrop-opacity-70" : "backdrop-blur-xl"} p-4 z-50`}>
                 <div className="text-md font-light">
                 <ul className="flex justify-between">
                     {sites.map(submap => (

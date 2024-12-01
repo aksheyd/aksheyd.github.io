@@ -13,9 +13,19 @@ import { Observer } from 'gsap/Observer';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, Observer);
 
-
 export default function Page() {
-    const containerRef = useRef<HTMLDivElement>(null);
+    // console.log("gello");
+    // useGSAP(() => {
+    //     Observer.create({
+    //         target: window,
+    //         type: "wheel,touch,scroll,pointer",
+    //         ignore: '.ignore-me',
+    //         onPress: () => console.log('press') 
+    //     });
+    // });
+
+    
+    // const containerRef = useRef<HTMLDivElement>(null);
     
     // // TODO: Observer?
     // useGSAP(() => {
@@ -58,7 +68,7 @@ export default function Page() {
 
     return (
         // add Tailwind?
-        <div ref={containerRef}>
+        <div className="window">
             <section className="berho">
                 <Nav />
             </section>

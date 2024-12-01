@@ -65,3 +65,4 @@ This project will touch multiple technologies and concepts, giving you a hands-o
 
 - { } Navbar is floating above everything and blends
 - { } Observer for smooth scrolling below intro (?)
+- { } Page TSX
