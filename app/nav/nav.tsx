@@ -7,21 +7,22 @@ import { useEffect, useState } from 'react';
 export default function Nav() {
     const [isThere, handleGettingThere] = useState(false);
 
-    useEffect(() => {
-        const handleScroll = () => {
-            if (window.scrollY > 3500) {
-                handleGettingThere(true);
-            } else {
-                handleGettingThere(false);
-            }
-        }
+    // FIXME: scrollY depends on screen - need to make dynamic
+    // useEffect(() => {
+    //     const handleScroll = () => {
+    //         if (window.scrollY > 3500) {
+    //             handleGettingThere(true);
+    //         } else {
+    //             handleGettingThere(false);
+    //         }
+    //     }
 
-        window.addEventListener("scroll", handleScroll);
+    //     window.addEventListener("scroll", handleScroll);
 
-        return () => {
-            window.removeEventListener("scroll", handleScroll);
-        };
-    }, []);
+    //     return () => {
+    //         window.removeEventListener("scroll", handleScroll);
+    //     };
+    // }, []);
 
     return (
         <div>

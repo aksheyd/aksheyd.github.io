@@ -1,5 +1,5 @@
 # Personal Portfolio
-This is the version of my portfolio uploaded for Vercel to get the most out of Next.JS's utility. 
+This is the production version of my portfolio uploaded for Vercel to get the most out of Next.JS's utility. 
 
 This version features:
 - More Frontend features
