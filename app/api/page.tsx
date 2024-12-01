@@ -1,14 +1,11 @@
-import SwaggerUI from 'swagger-ui-react'
-import 'swagger-ui-react/swagger-ui.css'
-import Divider from '../extras/divider'
+import Divider from '../extras/divider';
 
 export default function API() {
-    const serverUrl = "http://localhost:3000";
-
     return (
         <div id="Rest_API">
-            <Divider/>
-            <SwaggerUI url={`${serverUrl}/swagger.yml`}/>
+            <Divider />
+            <h1>Hello!</h1>
+            {/* <SwaggerUI url="http://localhost:3000/swagger.yml" /> */}
         </div>
-    )
+    );
 }
