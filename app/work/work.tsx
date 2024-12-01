@@ -9,7 +9,7 @@ export default function Work() {
       <Divider />
       {projects.map(item =>
         <div key={`${item.name}`} className="min-h-screen p-4">
-          <span><img className="float-right" src="https://upload.wikimedia.org/wikipedia/commons/3/38/Robot-clip-art-book-covers-feJCV3-clipart.png"></img></span>
+          {/* <span><img className="float-right" src="https://upload.wikimedia.org/wikipedia/commons/3/38/Robot-clip-art-book-covers-feJCV3-clipart.png"></img></span> */}
           <h2 className="text-3xl font-normal">{`${item.name}`}</h2>
           <p className="">{`${item.bio}`}</p>
           <p className="">{`${item.desc}`}</p>
