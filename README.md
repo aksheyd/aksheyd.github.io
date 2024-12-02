@@ -5,7 +5,7 @@ Hello! Welcome to the repo for my personal portfolio!
 I've been using this as a project to showcase my "resume" digitally while also learning fullstack web development.
 
 
-This branch features my deployment in [my Github Pages site](aksheyd.github.io), but Github Pages only supports static websites (😢). 
+This branch features my deployment in [my Github Pages site](https://aksheyd.github.io/), but Github Pages only supports static websites (😢). 
 To turn that frown upside down, I'm using Vercel to deploy ***[my website](https://portfolio-eight-lac-63.vercel.app) with way more features, better design, and even a REST API for future use.***
 Check out the branch [here](https://github.com/aksheyd/Personal-Portfolio/tree/vercel).
 
