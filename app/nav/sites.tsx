@@ -2,7 +2,7 @@ const sites = [
     { name: "_", link: "#Intro" },
     { name: "Projects", link: "#Work" },
     { name: "Connect", link: "#Contact" },
-    { name: "API", link: "#Rest_API" },
+    { name: "API", link: "https://portfolio-eight-lac-63.vercel.app/api" },
     { name: "Say Hi!", link: "#CopyEmail" },
 ];
 

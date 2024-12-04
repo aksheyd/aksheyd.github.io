@@ -1,24 +1,57 @@
 openapi: 3.0.0
 info:
-  title: Sample API
-  description: blank
+  title: Airport Terminals API
+  description: An OpenAPI definition for accessing airport terminals via IACO
   version: 1.0.0
 
 servers:
-  - url: http://localhost:3000/api
+  - url: https://portfolio-eight-lac-63.vercel.app/api
     description: Main 
 
 paths:
   /test:
     get:
-      summary: Returns a test request
-      description: Testing!
+      summary: Test Request
+      description: Very simple request
       responses:
         "200": 
-          description: A JSON message saying Hi
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /sfo:
+    get:
+      summary: Get SFO Terminals
+      description: Get terminal information for San Francisco International Airport
+      responses:
+        "200":
+          description: Success
           content:
             application/json:
               schema:
                 type: array
-                items:
-                  type: string
+                properties:
+                  terminal:
+                    type: array
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string

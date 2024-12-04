@@ -21,10 +21,6 @@ export default function Page() {
             <section>
                 <Contact />
             </section>
-
-            <section>
-                <API />
-            </section>
         </div>
     )
 }
