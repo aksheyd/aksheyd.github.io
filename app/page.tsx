@@ -1,3 +1,5 @@
+import Contact from "./contact/contact";
+import Future from "./future/future";
 import Intro from "./intro/intro";
 import Nav from "./nav/nav";
 import Work from "./work/work";
@@ -8,6 +10,8 @@ export default function Page() {
             <Nav/>
             <Intro/>
             <Work/>
+            <Contact/>
+            <Future/>
         </div>
     )
 }
