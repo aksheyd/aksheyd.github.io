@@ -6,7 +6,7 @@ info:
 
 servers:
   - url: https://portfolio-eight-lac-63.vercel.app/api
-    description: Main 
+    description: Main
 
 paths:
   /test:
@@ -14,7 +14,7 @@ paths:
       summary: Test Request
       description: Very simple request
       responses:
-        "200": 
+        "200":
           description: Success
           content:
             application/json:
@@ -23,6 +23,8 @@ paths:
                 properties:
                   message:
                     type: string
+              example:
+                message: "test"
         "401":
           description: Unauthorized
           content:
@@ -32,6 +34,9 @@ paths:
                 properties:
                   message:
                     type: string
+              example:
+                message: "Unauthorized access."
+
   /sfo:
     get:
       summary: Get SFO Terminals
@@ -43,9 +48,15 @@ paths:
             application/json:
               schema:
                 type: array
-                properties:
-                  terminal:
-                    type: array
+                items:
+                  type: object
+                  properties:
+                    terminal:
+                      type: string
+              example:
+                - "Terminal 1"
+                - "Terminal 2"
+                - "Terminal 3"
         "401":
           description: Unauthorized
           content:
@@ -55,3 +66,5 @@ paths:
                 properties:
                   message:
                     type: string
+              example:
+                message: "Unauthorized access."
