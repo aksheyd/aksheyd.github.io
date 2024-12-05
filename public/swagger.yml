@@ -47,16 +47,17 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    terminal:
+                type: object
+                properties:
+                  Terminals:
+                    type: array
+                    items:
                       type: string
               example:
-                - "Terminal 1"
-                - "Terminal 2"
-                - "Terminal 3"
+                Terminals:
+                  - "Terminal 1"
+                  - "Terminal 2"
+                  - "Terminal 3"
         "401":
           description: Unauthorized
           content:

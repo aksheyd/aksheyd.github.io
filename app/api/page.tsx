@@ -8,6 +8,7 @@ export default function API() {
         <div id="Rest_API" className="min-h-screen p-6 bg-white">
             <Divider />
             <RedocStandalone
+                // specUrl="http://localhost:3000/swagger.yml"
                 specUrl="https://portfolio-eight-lac-63.vercel.app/swagger.yml"
                 options={{
                     theme: { colors: { primary: { main: '#5c67f2' } }, typography: { fontSize: '16px' } },
