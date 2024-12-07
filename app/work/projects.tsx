@@ -8,7 +8,7 @@ let projects = [
         images: [
             "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Google_Gemini_logo.svg/2560px-Google_Gemini_logo.svg.png",
             "https://cdn.worldvectorlogo.com/logos/flask.svg",
-            "https://cdn.worldvectorlogo.com/logos/react-native-1.svg",
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlGmKtrnxElpqw3AExKXPWWBulcwjlvDJa1Q&s",
 
         ]
     },

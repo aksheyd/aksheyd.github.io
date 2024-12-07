@@ -31,5 +31,6 @@ export default function Future() {
                 </div>
             </div>
         </div>
+
     );
 }

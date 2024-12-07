@@ -7,6 +7,8 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import './intro.css';
+import Tooltip from '../test-particles/particles-tooltop';
+import TestParticles from '../test-particles/test-particles';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -22,9 +24,9 @@ export default function Intro() {
     hasRun = true;
   }
 
-	useGSAP(() => {
-		dynamicIntro();
-	});
+  useGSAP(() => {
+    dynamicIntro();
+  });
 
   useGSAP(() => {
     gsap.utils.toArray<Element>('.comparisonSection')
@@ -48,18 +50,23 @@ export default function Intro() {
   return (
     <div>
       <section id="#Intro" className="comparisonSection z-10 relative min-h-screen w-screen">
+        <TestParticles />
         <div className="dyn_intro flex select-none items-center justify-left w-screen min-h-screen">
           <div className="comparison text-center">
             <div className="z-50 text-9xl font-bold tracking-tight text-left">
-            <h1 className="">
-              <Animate text="Akshey" delay={200} />
-            </h1>
-            <h1 className="mt-2">
-              <Animate text="Deokule" delay={150} />
-            </h1>
+              <h1 className="">
+                <Animate text="Akshey" delay={200} />
+              </h1>
+              <h1 className="mt-2">
+                <Animate text="Deokule" delay={150} />
+              </h1>
             </div>
           </div>
         </div>
+
+        <Tooltip />
+
+
 
         <div className="after">
           <section>
