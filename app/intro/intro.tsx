@@ -47,15 +47,17 @@ export default function Intro() {
 
   return (
     <div>
-      <section id="#Intro" className="comparisonSection relative min-h-screen w-screen bg-white">
-        <div className="dyn_intro flex select-none items-center justify-left w-screen min-h-screen bg-white">
+      <section id="#Intro" className="comparisonSection z-10 relative min-h-screen w-screen">
+        <div className="dyn_intro flex select-none items-center justify-left w-screen min-h-screen">
           <div className="comparison text-center">
-            <h1 className="text-9xl font-bold tracking-tight text-left">
+            <div className="z-50 text-9xl font-bold tracking-tight text-left">
+            <h1 className="">
               <Animate text="Akshey" delay={200} />
             </h1>
-            <h1 className="text-9xl font-bold tracking-tight text-left mt-2">
+            <h1 className="mt-2">
               <Animate text="Deokule" delay={150} />
             </h1>
+            </div>
           </div>
         </div>
 

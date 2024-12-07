@@ -43,20 +43,8 @@ As per what I've been using/learning this project:
 <br>
 
 # TODO:
-This is a global todolist across all branches (save your concerns).
-- [ ] Finish projects section with details and cool UI Images
-  - [ ] Add this as a project lmao
-- [ ] Look into clipboard package to copy my email to user clipboard on 'Say Hi!' button
-- [ ] Plan server structure for API
-  - [ ] Populate date (airport terminals)
-- [ ] Flush out navbar style (floating or sticky)
-- [ ] Look into implementing Observer to just remove scrolling
-- [ ] Get no errors on dev and build
-  - [x] I spend 90% of my hours just on this 😭
-- [x] Update readme across branches
-- [x] Stable prod deployment on Pages and Vercel
-        
-updated 12/1/2024
+I work in one-ish week sprints. Here's an example of my Sprint Board:
+<img src="/sprint_board.png">
 
 <br>
 <br>
