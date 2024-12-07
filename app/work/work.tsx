@@ -148,7 +148,7 @@ export default function Work() {
 
                     <div className="relative col-start-3 col-span-6 flex flex-wrap justify-center items-center">
                         {item.images.map((image, i) => (
-                            <div key={i} className="project-image p-4 flex justify-center items-center">
+                            <div key={i} className="project-image p-6 flex justify-center items-center">
                                 <img
                                     key={i}
                                     alt=""
