@@ -1,5 +1,6 @@
 const sites = [
     { name: "_", link: "#Intro" },
+    { name: "About", link: "#About" },
     { name: "Projects", link: "#Work" },
     { name: "Connect", link: "#Contact" },
     { name: "Future", link: "#Future" },

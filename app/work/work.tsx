@@ -4,30 +4,129 @@ import Divider from '../extras/divider';
 import projects from './projects';
 import React, { useEffect } from 'react';
 import { gsap } from 'gsap';
+
+// Extend the ScrollTrigger type to include projectSectionIndex
+// declare global {
+//     namespace globalThis {
+//         interface ScrollTrigger {
+//             projectSectionIndex?: number;
+//         }
+//     }
+// }
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
+// import { Observer } from 'gsap/Observer';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Work() {
-    // useGSAP(() => {
-    //     projects.forEach((_, i) => {
-    //         const triggerElement = `.project-section-${i}`;
-    //         const textElement = `${triggerElement} .project-text`;
-    //         const imageElement = `${triggerElement} .project-image`;
+    useGSAP(() => {
+        // let sectionSTs: globalThis.ScrollTrigger[] = [];
+        // let allTLs: gsap.core.Timeline[] = [];
+        // let masterTL = gsap.timeline();
 
-    //         gsap.timeline({
-    //             scrollTrigger: {
-    //                 trigger: textElement,
-    //                 start: "top bottom", // Start when the top of the section hits the bottom of the viewport
-    //                 end: "bottom top", // End when the bottom of the section hits the top of the viewport
-    //                 scrub: 1, // Smooth scrubbing effect
-    //                 pin: imageElement, // Pin the image
-    //                 anticipatePin: 1,
-    //             },
-    //         });
-    //     });
-    // }, []);
+        projects.forEach((_, i) => {
+            const triggerElement = `.project-section-${i}`;
+            // const textElement = `${triggerElement} .project-text`;
+            const imageElements = `${triggerElement} .project-image`;
+
+            let tl = gsap.timeline();
+
+            tl.fromTo(
+                imageElements,
+                {
+                    opacity: 0.5,
+                    x: 0,
+                    y: 0,
+                    rotateX: 90,        
+                    rotateY: 90,        
+                    rotateZ: 90,       
+                },
+                {
+                    opacity: 1,         
+                    x: 0,
+                    y: 0,
+                    rotateX: 0,          
+                    rotateY: 0,         
+                    rotateZ: 0,          
+                    stagger: 0.2,        
+                    duration: 0.5,         
+                    scrollTrigger: {
+                        trigger: triggerElement,
+                        start: "top top",
+                        end: "bottom top",
+                        scrub: 1,
+                        pin: true,
+                        anticipatePin: 1,
+                    }
+                },
+            );
+
+            // let sectionST = ScrollTrigger.create({
+            //     trigger: triggerElement,
+            //     start: "top top",
+            //     end: "bottom top",
+            //     scrub: 1,
+            //     pin: true,
+            //     anticipatePin: 1,
+            //     onEnter: () => scrollObserver.enable(),
+            //     onEnterBack: () => scrollObserver.enable(),
+            //     onLeave: () => scrollObserver.disable(),
+            //     onLeaveBack: () => scrollObserver.disable(),
+            // });
+            // sectionST.projectSectionIndex = i;
+
+            // sectionSTs.push(sectionST);
+            // allTLs.push(tl);
+            // masterTL.add(tl, i);
+        });
+
+
+        // let scrollObserver = Observer.create({
+        //     type: "wheel,touch",
+        //     wheelSpeed: -1,
+        //     debounce: false,
+        //     dragMinimum: 2,
+        //     preventDefault: true,
+        //     onUp: () => {
+        //         const currentSectionIndex = getCurrentActiveSectionIndex();
+        //         if (currentSectionIndex !== null && currentSectionIndex !== undefined) {
+        //             let currSection = sectionSTs[currentSectionIndex];
+        //             currSection.scroll(currSection.end);
+        //             allTLs[currentSectionIndex].eventCallback("onComplete", () => {
+        //                 scrollObserver.disable();
+        //             });
+        //         }
+        //       },
+        //       onDown: () => {
+        //         const currentSectionIndex = getCurrentActiveSectionIndex();
+        //         if (currentSectionIndex !== null && currentSectionIndex !== undefined) {
+        //             let currSection = sectionSTs[currentSectionIndex];
+        //             currSection.scroll(currSection.start);
+        //             allTLs[currentSectionIndex].eventCallback("onReverseComplete", () => {
+        //                 scrollObserver.disable();
+        //             });
+        //         }
+        //       },
+        //     onEnable(self) {
+        //         // when enabling, we should save the scroll position and freeze it. This fixes momentum-scroll on Macs, for example.
+        //         let savedScroll = self.scrollY();
+        //         (self as any)._restoreScroll = (e: Event) => self.scrollY(savedScroll)
+        //         document.addEventListener("scroll", (self as any)._restoreScroll, { passive: false });
+        //     },
+        //     onDisable(self) {
+        //         document.removeEventListener("scroll", (self as any)._restoreScroll);
+        //     }
+        // });
+        // scrollObserver.disable();
+
+        // function getCurrentActiveSectionIndex() {
+        //     const activeSection = sectionSTs.find(st => st.isActive);
+            
+        //     return activeSection ? activeSection.projectSectionIndex : null;
+        // }
+          
+    }, []);
 
     return (
         <div id="Work" className="min-h-screen p-6 bg-white">
@@ -37,23 +136,30 @@ export default function Work() {
             {projects.map((item, i) => (
                 <div
                     key={item.name}
-                    className={`relative min-h-screen grid grid-cols-6 gap-4 project-section-${i}`}
+                    className={`relative min-h-screen grid grid-cols-6 grid-rows-auto items-center justify-center gap-4 project-section-${i}`}
                 >
                     {/* Text Section */}
                     <div className="project-text col-start-1 col-span-2 p-6 flex flex-col font-extralight text-lg tracking-wide">
-                        <h2 className="text-3xl font-normal">{item.name}</h2>
+                        <h2 className="text-3xl font-normal animate-pulse">{item.name}</h2>
                         <p className="p-3">{item.bio}</p>
                         <p className="p-3">{item.desc}</p>
-                        <a className="p-3 underline font-normal" href={item.link}>Learn More</a>
+                        <a className="p-3 underline font-normal" target="_blank" href={item.link}>Learn More</a>
                     </div>
-                    {/* Image Section */}
-                    <div className="project-image col-start-3 col-span-6">
-                        <img
-                            alt=""
-                            src="https://aksheyd.github.io/images.jpeg"
-                            className="w-full max-w-none rounded-xl bg-white shadow-xl ring-1 ring-gray-400/10"
-                        />
+
+                    <div className="relative col-start-3 col-span-6 flex flex-wrap justify-center items-center">
+                        {item.images.map((image, i) => (
+                            <div key={i} className="project-image p-4 flex justify-center items-center">
+                                <img
+                                    key={i}
+                                    alt=""
+                                    src={image}
+                                    className="max-h-28 w-auto object-contain hover:scale-110 transition duration-700 ease-in-out"
+                                />
+                            </div>
+                        ))}
+
                     </div>
+
                 </div>
             ))}
         </div>

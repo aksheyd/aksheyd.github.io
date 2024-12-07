@@ -1,4 +1,6 @@
+import About from "./about/about";
 import Contact from "./contact/contact";
+import Divider from "./extras/divider";
 import Future from "./future/future";
 import Intro from "./intro/intro";
 import Nav from "./nav/nav";
@@ -9,6 +11,7 @@ export default function Page() {
         <div className="overflow-x-hidden"> 
             <Nav/>
             <Intro/>
+            <About/>
             <Work/>
             <Contact/>
             <Future/>
