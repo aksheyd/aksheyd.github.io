@@ -1,5 +1,6 @@
 'use client';
 import { FormEvent, useState } from 'react'
+import './contact.css'
 
 export default function Contact() {
     const [formSubmitted, setFormSubmitted] = useState(false);
@@ -41,7 +42,7 @@ export default function Contact() {
         <div id="Contact" className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
             <div
                 aria-hidden="true"
-                className="absolute transition-all duration-700 ease-in-out animate-wiggle top-5 inset-x-0 -z-50 transform-gpu overflow-hidden blur-4xl"
+                className="absolute transition-all duration-700 ease-in-out top-5 inset-x-0 -z-50 transform-gpu overflow-hidden blur-4xl"
             >
                 <div
                     style={{
