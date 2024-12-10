@@ -15,7 +15,7 @@ let projects = [
     {
         name: "Personal Portfolio",
         bio: "A website application leveraging modern web technologies",
-        desc: "Created using Next.js, React, and Typescript, featuring a REST API, GSAP animations, Tailwind CSS for styling, and Swagger for documentation. Split up into a Github Pages deployment for portfolio and Vercel deployment for cooler features.",
+        desc: "Created using Next.js, React, and Typescript, featuring GSAP, tsParticles, Tailwind CSS, and more to come! Deployed via Github Pages.",
         date: "November 2024 - March 2024",
         link: "https://github.com/aksheyd/aksheyd.github.io",
         images: [
