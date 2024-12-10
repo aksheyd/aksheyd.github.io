@@ -5,9 +5,7 @@ Hello! Welcome to the repo for my personal portfolio!
 I've been using this as a project to showcase my "resume" digitally while also learning fullstack web development.
 
 
-This branch features my deployment in [my Github Pages site](https://aksheyd.github.io/), but Github Pages only supports static websites (😢). 
-To turn that frown upside down, I'm using Vercel to deploy ***[my website](https://portfolio-eight-lac-63.vercel.app) with way more features, better design, and even a REST API for future use.***
-Check out the branch [here](https://github.com/aksheyd/Personal-Portfolio/tree/vercel).
+This branch features my deployment in [my Github Pages site](https://aksheyd.github.io/). I've been using Next.js, React, TypeScript, and Tailwind CSS to build this site. I've also been using GSAP for some animations and transitions as well as tsParticles for the background particles.
 
 <br>
 <br>
@@ -35,9 +33,8 @@ As per what I've been using/learning this project:
 | TypeScript/JavaScript | Language | ✔️ |
 | Tailwind CSS | CSS Implementation | ✔️ |
 | VSCode | IDE | ✔️ |
-| GSAP | Scrolling features |  | 
-| SwaggerUI | REST API Interface |
-| OpenAPI | API Framework | 
+| GSAP | Scrolling features | ✔️ | 
+| tsParticles | Background Particles | ✔️ |
 
 <br>
 <br>
@@ -50,8 +47,9 @@ I work in one-ish week sprints. Here's an example of my Sprint Board:
 <br>
 
 # Fun Facts:
-- From scratch, I finished the REST API framework on a flight back to school ✈️
+- From scratch, I finished a REST API framework on a flight back to school ✈️
   - I had a working API 30,000 ft in the air, **what an incredible time to be alive**
+  - sidenote: I never got to use the API in this site, but it will make an appearance in the future
 - I started this project with like 0 JavaScript knowledge (I used to just get by using chatgpt)
   - My first 8 hours of coding was 3 boxes and an image of myself that wouldn't render 
   
