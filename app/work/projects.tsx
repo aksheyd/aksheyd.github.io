@@ -1,4 +1,18 @@
 let projects = [
+    {   
+        name: "Legend of Zelda",
+        bio: "A remake of the first dungeon of the original NES Legend of Zelda game",
+        desc: "Collaborated with a peer to develop the game in Unity using C#. The game features the first dungeon from the original NES version. Click the link to play the game online!",
+        date: "January 2025",
+        link: "/legend-of-zelda",
+        images: [
+            "https://cdn.worldvectorlogo.com/logos/unity-technologies-logo.svg",
+            "https://cdn.worldvectorlogo.com/logos/c--4.svg",
+            "https://cdn.worldvectorlogo.com/logos/adobe-photoshop-2.svg",
+
+        ]
+    },
+
     {
         name: "Gemini AI ASL Translator",
         bio: "An American Sign Language (ASL) Translator utilizing Google's Gemini API",
