@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 export default function Unity() {
     useEffect(() => {
         const iframe = document.createElement('iframe');
-        iframe.src = `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/tempbuild/index.html`;
+        iframe.src = `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/unity/index.html`;
         iframe.style.width = '100%';
         iframe.style.height = '100vh';
         iframe.style.border = 'none';
@@ -31,10 +31,10 @@ export default function Unity() {
 
             </div>
             {/* Game Section */}
-            <div id="unity-container" className="flex-3 bg-gray-100 w-2/4 h-full" />
+            <div id="unity-container" className="flex-3 bg-gray-100 w-3/5 h-full" />
 
             {/* Instructions Section */}
-            <div className="w-1/4 p-6 bg-gray-200 overflow-y-auto">
+            <div className="w-1/6 p-6 bg-gray-200 overflow-y-auto">
 
                 {/* Instructions */}
                 <h3 className="text-xl font-bold mb-4">Controls:</h3>
