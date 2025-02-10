@@ -9,7 +9,7 @@
   </head>
   <body>
     <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=512 height=480 tabindex="-1"></canvas>
+      <canvas id="unity-canvas" width=768 height=720 tabindex="-1"></canvas>
       <div id="unity-loading-bar">
         <div id="unity-logo"></div>
         <div id="unity-progress-bar-empty">
@@ -52,14 +52,14 @@
       }
 
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/tempbuild.loader.js";
+      var loaderUrl = buildUrl + "/unity.loader.js";
       var config = {
         arguments: [],
-        dataUrl: buildUrl + "/tempbuild.data",
-        frameworkUrl: buildUrl + "/tempbuild.framework.js",
-        codeUrl: buildUrl + "/tempbuild.wasm",
+        dataUrl: buildUrl + "/unity.data",
+        frameworkUrl: buildUrl + "/unity.framework.js",
+        codeUrl: buildUrl + "/unity.wasm",
         streamingAssetsUrl: "StreamingAssets",
-        companyName: "Akshey_Nate",
+        companyName: "Akshey_Nathaniel",
         productName: "Legend of Zelda",
         productVersion: "1",
         showBanner: unityShowBanner,
@@ -98,8 +98,8 @@
 
       } else {
         // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
-        canvas.style.width = "512px";
-        canvas.style.height = "480px";
+        canvas.style.width = "768px";
+        canvas.style.height = "720px";
       }
 
       document.querySelector("#unity-loading-bar").style.display = "block";
