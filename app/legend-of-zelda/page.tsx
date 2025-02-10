@@ -13,5 +13,28 @@ export default function Unity() {
         document.getElementById('unity-container')?.appendChild(iframe);
     }, []);
 
-    return <div id="unity-container" />;
+    return (
+        <div>
+            <div className="mx-auto max-w-2xl text-center">
+                <div id="unity-container" />
+                <p>
+                    Controls:
+                </p>
+                <p>
+                    ARROW KEYS / WASD: Move
+                </p>
+                <p>
+                    SPACE: Change Weapon (if available)
+                </p>
+                <p>
+                    X: Primary Attack
+
+                </p>
+                <p>
+
+                    Z: Secondary Attack
+                </p>
+            </div>
+        </div>
+    );
 };
