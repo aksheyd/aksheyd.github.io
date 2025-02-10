@@ -12,7 +12,6 @@ let projects = [
 
         ]
     },
-
     {
         name: "Gemini AI ASL Translator",
         bio: "An American Sign Language (ASL) Translator utilizing Google's Gemini API",
