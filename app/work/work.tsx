@@ -144,6 +144,9 @@ export default function Work() {
                         <p className="p-3">{item.bio}</p>
                         <p className="p-3">{item.desc}</p>
                         <a className="p-3 underline font-normal" target="_blank" href={item.link}>Learn More</a>
+                        {/* {item.link2 && (
+                            <a className="p-3 underline font-normal" target="_blank" href={item.link2}>Learn More 2</a>
+                        )} */}
                     </div>
 
                     <div className="relative col-start-3 col-span-6 flex flex-wrap justify-center items-center">
