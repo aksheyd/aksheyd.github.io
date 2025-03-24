@@ -1,5 +1,28 @@
-let projects = [
+export type Project = {
+    id: number;
+    name: string;
+    bio: string;
+    desc: string;
+    date: string;
+    link: string;
+    images: string[];
+}
+
+let projects: Project[] = [
+    {
+        id: 0,
+        name: "What's Up",
+        bio: "Learn your local laws!",
+        desc: "Developed as part of Data Driven Hackathon. Django with SQLite deployed on fly.io. FSLite for DB replication and Fly.io for loadbalancing. Running 3 replicas.",
+        date: "March 2025",
+        link: "https://github.com/aksheyd/whatsup",
+        images: [
+            ""
+        ]
+    },
+
     {   
+        id: 1,
         name: "Destroy The Wormhole",
         bio: "A 'goldspike', endless space runner game with cloning.",
         desc: "Developed the game in two weeks with Unity using C#. Click the link to play the game online!",
@@ -20,6 +43,7 @@ let projects = [
     //     ]
     // },
     {   
+        id: 2,
         name: "Legend of Zelda",
         bio: "A remake of the first dungeon of the original NES Legend of Zelda game",
         desc: "Collaborated with a peer to develop the game in Unity using C#. The game features the first dungeon from the original NES version. Click the link to play the game online!",
@@ -33,6 +57,7 @@ let projects = [
         ]
     },
     {
+        id: 3,
         name: "Gemini AI ASL Translator",
         bio: "An American Sign Language (ASL) Translator utilizing Google's Gemini API",
         desc: "Collaborated with 2 team members to create a React and Flask web app to allow users to record videos signing and translate American Sign Language (ASL) into English via Gemini 1.5’s Video API. Submitted as part of MHacks x Google Hackathon",
@@ -46,6 +71,7 @@ let projects = [
         ]
     },
     {
+        id: 4,
         name: "Personal Portfolio",
         bio: "A website application leveraging modern web technologies",
         desc: "Created using Next.js, React, and Typescript, featuring GSAP, tsParticles, Tailwind CSS, and more to come! Deployed via Github Pages.",
@@ -59,6 +85,7 @@ let projects = [
         ]
     },
     {
+        id: 5,
         name: "NBA Neural Network Finals Predictor",
         bio: "A Neural Network utilizing Python libraries to predict NBA Champions",
         desc: "Trained a neural network to predict the chance of NBA teams to make the finals based on championship data from over 25 years of previous seasons utilizing pandas, the NBA API, and tensorflow with scikit-learn",
