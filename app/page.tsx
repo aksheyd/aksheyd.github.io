@@ -16,7 +16,6 @@ export default function Page() {
             <About/>
             <Work/>
             <Contact/>
-            <Future/>
         </div>
     )
 }
