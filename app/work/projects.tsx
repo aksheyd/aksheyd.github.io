@@ -1,4 +1,15 @@
 let projects = [
+    {
+        name: "Dueler's Providence",
+        bio: "A soulslike sword combat game with directional parrying.",
+        desc: "Collaborated with a 5-person student team in Unity using C#. Focused on level design, environment details, lighting, lore, and trailer creation. Click the link for more details and downloads.",
+        date: "May 2025", // Adjust date if needed
+        link: "/providence",
+        images: [
+            "https://cdn.worldvectorlogo.com/logos/unity-technologies-logo.svg",
+            "https://cdn.worldvectorlogo.com/logos/c--4.svg",
+        ]
+    },
     {   
         name: "Destroy The Wormhole",
         bio: "A 'goldspike', endless space runner game with cloning.",
