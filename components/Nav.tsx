@@ -1,31 +1,41 @@
 "use client";
 
-import Link from "next/link";
-import { Button } from "./ui/button";
+import { TerminalIcon } from "lucide-react";
 import { ModeToggle } from "./ui/mode-toggle";
+import { useState } from "react";
+import { Button } from "./ui/button";
+
+const titles: string[] = [
+    "Akshey Deokule",
+    "Software Engineer",
+    "Builder",
+    "Student"
+]
 
 export default function Nav() {
-  return (
-    <header className="flex h-14 items-center justify-center border border-dashed bg-background/95 px-4">
-      <nav className="hidden md:flex items-center space-x-4 lg:space-x-6 mx-6">
-        <Button variant="ghost" size="sm" className="h-8 px-2">
-          File
-        </Button>
-        <Button variant="ghost" size="sm" className="h-8 px-2">
-          Edit
-        </Button>
-        <Button variant="ghost" size="sm" className="h-8 px-2">
-          View
-        </Button>
-        <Button variant="ghost" size="sm" className="h-8 px-2">
-          Help
-        </Button>
-      </nav>
+    const [name, setName] = useState<string>(titles[0]);
+    const [nameIndex, setNameIndex] = useState<number>(0);
 
-      <nav className="absolute right-10">
-        <ModeToggle/>
-      </nav>
-    </header>
+    const handleClick = () => {
+        const nextIndex = (nameIndex + 1) % titles.length;
+        setNameIndex(nextIndex);
+        setName(titles[nextIndex]);
+    }
 
-  );
+    // TODO: add blog button and a blog page
+    return (
+        <div className="relative flex h-14 items-center gap-2 px-4 py-2 border border-dashed bg-muted/50">
+            <TerminalIcon className="h-4 w-4" />
+            <Button
+                onClick={handleClick} 
+            >
+            <span className="font-mono text-sm animate-pulse-opacity">
+                {name}
+            </span>
+            </Button>
+            <nav className="absolute right-10">
+                <ModeToggle />
+            </nav>
+        </div>
+    );
 }
