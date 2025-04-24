@@ -1,16 +1,15 @@
-import { Urbanist } from 'next/font/google'
-import type { Metadata } from 'next'
-import './globals.css'
+import './globals.css';
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google'; 
+import { ThemeProvider } from "@/components/ThemeProvider"
+
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Portfolio',
-  description: 'Aksheys portfolio',
-}
-
-const urbanist = Urbanist({
-  subsets: ['latin'],
-  display: 'swap',
-})
+  title: 'Akshey\'s Portfolio',
+  description: 'Akshey Deokule\s Portfolio',
+  keywords: ['portfolio', 'akshey', 'deokule']
+};
 
 export default function RootLayout({
   children,
@@ -18,9 +17,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${urbanist.className} scroll-smooth`}>
-      <body>{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className}>
+        {/* Example ThemeProvider setup for Shadcn dark/light mode */}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
-}
-
+} 
