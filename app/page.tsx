@@ -1,18 +1,11 @@
-import Hero from "../components/Hero";
-import Nav from "../components/Nav";
-import About from "../components/About";
-import WorkSection from "../components/WorkSection";
-import projects from "@/lib/projects";
+import Nav from "@/components/Nav";
+import Terminal from "../components/Terminal";
 
 export default function Page() {
   return (
-    <div className="overflow-x-hidden min-h-screen bg-background text-foreground">
-      <Nav />
-      <Hero />
-      <About />
-      <WorkSection
-      projects={projects}
-      />
+    <div className="overflow-x-hidden max-h-screen bg-background text-foreground">
+      <Nav/>
+      <Terminal />
     </div>
   );
 } 
