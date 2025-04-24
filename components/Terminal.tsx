@@ -1,0 +1,120 @@
+"use client";
+
+import projects from "@/lib/projects";
+import { useState } from "react";
+
+// TODO: add open, ls -a, ls -l commands
+
+export default function Terminal() {
+  const [command, setCommand] = useState<string>("");
+  const [history, setHistory] = useState<string[]>([]);
+  const [output, setOutput] = useState<string[]>([
+    "Welcome to my terminal.",
+    "Type 'help' for available commands"
+  ]);
+  const [historyIndex, setHistoryIndex] = useState<number>(-1);
+
+  const handleCommand = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      const cmd = command.trim().toLowerCase();
+
+      if (cmd) {
+        setHistory(prev => [...prev, cmd]);
+        setHistoryIndex(-1);
+        processCommand(cmd);
+      }
+      setCommand("");
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      if (history.length > 0 && historyIndex < history.length - 1) {
+        const newIndex: number = historyIndex + 1;
+        setHistoryIndex(newIndex);
+        setCommand(history[history.length - 1 - newIndex]);
+      }
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      if (history.length > 0) {
+        const newIndex: number= historyIndex - 1;
+        setHistoryIndex(newIndex);
+        setCommand(history[history.length - 1 - newIndex]);
+      } else if (historyIndex === 0) {
+        setHistoryIndex(-1);
+        setCommand("");
+      }
+    } 
+  }
+
+  const processCommand = (cmd: string) => {
+    let newOutput: string[] = [...output, `$ ${cmd}`]
+
+    if (cmd === "ls") {
+      newOutput.push(projects.map(p => p.name).join("  "));
+    } else if (cmd.startsWith("ls ")) {
+      const projectName = cmd.split(" ")[1];
+      const project = projects.find(p => p.name === projectName)
+      if (project) {
+        newOutput.push(
+          `name: ${project.name}`,
+          `desc: ${project.desc}`,
+          `tech: ${project.tech.join(", ")}`,
+          `url: ${project.link}`,
+        );
+      } else {
+        newOutput.push(`project not found: ${projectName}`);
+      }
+    } else if (cmd === "x") {
+      newOutput.push("https://x.com/_aksheyd")
+      window.open("https://x.com/_aksheyd", "_blank");
+    } else if (cmd === "linkedin") {
+      newOutput.push("http://linkedin.com/in/aksheydeokule/")
+      window.open("http://linkedin.com/in/aksheydeokule/", "_blank");
+    } else if (cmd === "clear") {
+      newOutput = [];
+    } else if (cmd === "help") {
+      newOutput.push(
+        "Available commands:",
+        "  Projects          ---------------------",
+        "  ls [-a] [-l]      List all projects",
+        "  ls <project>      Show project details",
+        "  open <project>    Open link to project",
+        " ",
+        "  Socials           ---------------------",
+        "  x                 Open my X account",
+        "  linkedin          Open my LinkedIn profile",
+        " ",
+        "  Extra             ---------------------",
+        "  clear             Clear terminal",
+        "  help              Show this help message"
+      );
+    } else {
+      newOutput.push(`command not found: ${cmd}`);
+    }
+
+    setOutput(newOutput);
+  }
+
+
+  return (
+    <section className="w-full border-l border-r border-b border-dashed bg-card overflow-hidden">
+      <div className="p-4 h-screen font-mono text-xs overflow-auto">
+        <div className="space-y-1">
+          {output.map((line, i) => (
+            <pre key={i} className="whitespace-pre-wrap text-xs">{line}</pre>
+          ))}
+        </div>
+        <div className="flex items-center gap-2 mt-2">
+          <span>$</span>
+          <input
+            type="text"
+            value={command}
+            onChange={(e) => setCommand(e.target.value)}
+            onKeyDown={handleCommand}
+            className="flex-1 bg-transparent outline-none"
+            spellCheck={false}
+            autoFocus
+          />
+        </div>
+      </div>
+    </section>
+  );
+} 
