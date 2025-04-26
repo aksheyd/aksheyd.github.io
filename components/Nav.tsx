@@ -26,13 +26,20 @@ export default function Nav() {
     return (
         <div className="relative flex h-14 items-center gap-2 px-4 py-2 border border-dashed bg-muted/50">
             <TerminalIcon className="h-4 w-4" />
-            <Button
-                onClick={handleClick} 
-            >
-            <span className="font-mono text-sm animate-pulse-opacity">
-                {name}
-            </span>
+            <Button onClick={handleClick}>
+                <span className="font-mono text-sm animate-pulse-opacity">
+                    {name}
+                </span>
             </Button>
+
+            <Button>
+                <a href="/blog" target="_blank">
+                    <span className="font-mono text-sm underline ml-10">
+                        Blog
+                    </span>
+                </a>
+            </Button>
+
             <nav className="absolute right-10">
                 <ModeToggle />
             </nav>
