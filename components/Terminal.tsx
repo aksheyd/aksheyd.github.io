@@ -1,9 +1,19 @@
 "use client";
 
 import projects from "@/lib/projects";
+import { randomInt } from "crypto";
 import { useState } from "react";
 
 // TODO: add open, ls -a, ls -l commands
+// TODO: ADD TAB Auto complete????
+// TODO: ADD CTRL C to cancel and CTRL U to CLEAR?
+
+const perm_types: string[] = [
+  '-r--r--r--',
+  'drwxr-xr-x',
+  '-rw-r--r--',
+  'drwxr-xr-x@'
+]
 
 export default function Terminal() {
   const [command, setCommand] = useState<string>("");
@@ -34,14 +44,14 @@ export default function Terminal() {
     } else if (e.key === "ArrowDown") {
       e.preventDefault();
       if (history.length > 0) {
-        const newIndex: number= historyIndex - 1;
+        const newIndex: number = historyIndex - 1;
         setHistoryIndex(newIndex);
         setCommand(history[history.length - 1 - newIndex]);
       } else if (historyIndex === 0) {
         setHistoryIndex(-1);
         setCommand("");
       }
-    } 
+    }
   }
 
   const processCommand = (cmd: string) => {
@@ -50,18 +60,45 @@ export default function Terminal() {
     if (cmd === "ls") {
       newOutput.push(projects.map(p => p.name).join("  "));
     } else if (cmd.startsWith("ls ")) {
-      const projectName = cmd.split(" ")[1];
-      const project = projects.find(p => p.name === projectName)
-      if (project) {
-        newOutput.push(
-          `name: ${project.name}`,
-          `desc: ${project.desc}`,
-          `tech: ${project.tech.join(", ")}`,
-          `url: ${project.link}`,
-        );
+      const subcommand = cmd.split(" ")[1].trim();
+      
+      if (subcommand === "-a") {
+        projects.forEach(project => {
+          newOutput.push(
+            `name: ${project.name}`,
+            `desc: ${project.desc}`,
+            `date: ${project.date}`,
+            `tech: ${project.tech.join(", ")}`,
+            `url: ${project.link}`,
+            " ",
+          );
+        })
+      } else if (subcommand === "-l") {
+        projects.map(project => {
+          const permission: string = perm_types[Math.floor(Math.random() * perm_types.length)]
+          const type : number = Math.floor(Math.random() * 30)
+          const size : number = Math.floor(Math.random() * 600)
+
+          newOutput.push(
+            `${permission}  ${type} aksheydeokule  staff  ${size} ${project.date} aksheydeokule staff ${project.name}`,
+          );
+        })
       } else {
-        newOutput.push(`project not found: ${projectName}`);
+        const projectName = subcommand;
+        const project = projects.find(p => p.name === projectName)
+        if (project) {
+          newOutput.push(
+            `name: ${project.name}`,
+            `desc: ${project.desc}`,
+            `date: ${project.date}`,
+            `tech: ${project.tech.join(", ")}`,
+            `url: ${project.link}`,
+          );
+        } else {
+          newOutput.push(`project/command not found: ${projectName}`);
+        }
       }
+
     } else if (cmd === "x") {
       newOutput.push("https://x.com/_aksheyd")
       window.open("https://x.com/_aksheyd", "_blank");
