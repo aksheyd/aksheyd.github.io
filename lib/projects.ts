@@ -2,7 +2,8 @@
 interface Project {
   name: string;
   desc: string; 
-  tech: string[],
+  tech: string[];
+  date: string;
   link?: string; 
   repo?: string; 
 }
@@ -12,12 +13,14 @@ const projects: Project[] = [
   {
     name: "destroy-the-wormhole",
     desc: "This is a detailed description of the first project, highlighting its features and the technologies used.",
+    date: "March 2025",
     tech: ["Unity", "C#"],
     link: "/destroy-the-wormhole",
   },
   {
     name: "legend-of-zelda",
     desc: "This is a game developed using Unity. It features...",
+    date: "February 2025",
     tech: ["Unity", "C#"],
     link: "/legend-of-zelda",
   },
