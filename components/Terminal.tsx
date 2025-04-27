@@ -1,7 +1,7 @@
 "use client";
 
 import projects from "@/lib/projects";
-import { randomInt } from "crypto";
+import socialAccounts from "@/lib/socials";
 import { useState } from "react";
 
 // TODO: ADD TAB Auto complete????
@@ -12,6 +12,28 @@ const perm_types: string[] = [
   '-rw-r--r--',
   'drwxr-xr-x@'
 ]
+
+// populate set with all social commands
+let socials : Set<string> = new Set<string>
+let socialsHelp : string =  "";
+socialAccounts.forEach(acct => {
+  socials.add(acct.name);
+  socialsHelp += `  ${acct.name}${acct.spacing}Open my ${acct.pretty} account\n`
+})
+
+const helpDocString : string = `  Available commands:
+  ------------- 
+  ls [-a] [-l]      List all projects
+  ls <project>      Show project details
+  open <project>    Open link to project
+
+  -------------
+${socialsHelp}
+
+  -------------
+  clear             Clear terminal
+  help              Show this help message
+`
 
 export default function Terminal() {
   const [command, setCommand] = useState<string | undefined>("");
@@ -118,13 +140,18 @@ export default function Terminal() {
           newOutput.push(`project/command not found: ${projectName}`);
         }
       }
+    
+    // --- social network commands ---
+    } else if (socials.has(cmd)) {
+      const acct = socialAccounts.find(s => s.name === cmd);
+      if (!acct) {
+        return;
+      }
 
-    } else if (cmd === "x") {
-      newOutput.push("https://x.com/_aksheyd")
-      window.open("https://x.com/_aksheyd", "_blank");
-    } else if (cmd === "linkedin") {
-      newOutput.push("http://linkedin.com/in/aksheydeokule/")
-      window.open("http://linkedin.com/in/aksheydeokule/", "_blank");
+      newOutput.push(`opening my ${acct.pretty}`); 
+      window.open(acct.website);
+    
+    // --- utility commands ---
     } else if (cmd === "clear") {
       newOutput = [];
     } else if (cmd === "help") {
