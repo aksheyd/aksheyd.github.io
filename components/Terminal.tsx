@@ -99,6 +99,7 @@ export default function Terminal() {
   const processCommand = (cmd: string) => {
     let newOutput: string[] = [...output, `$ ${cmd}`]
 
+    // --- ls commands ---
     if (cmd === "ls") {
       newOutput.push(projects.map(p => p.name).join("  "));
     } else if (cmd.startsWith("ls ")) {
@@ -137,7 +138,7 @@ export default function Terminal() {
             `url: ${project.link}`,
           );
         } else {
-          newOutput.push(`project/command not found: ${projectName}`);
+          newOutput.push(`not found: ${projectName}`);
         }
       }
     
@@ -155,21 +156,30 @@ export default function Terminal() {
     } else if (cmd === "clear") {
       newOutput = [];
     } else if (cmd === "help") {
-      newOutput.push(
-        "Available commands:",
-        "  Projects          ---------------------",
-        "  ls [-a] [-l]      List all projects",
-        "  ls <project>      Show project details",
-        "  open <project>    Open link to project",
-        " ",
-        "  Socials           ---------------------",
-        "  x                 Open my X account",
-        "  linkedin          Open my LinkedIn profile",
-        " ",
-        "  Extra             ---------------------",
-        "  clear             Clear terminal",
-        "  help              Show this help message"
-      );
+      newOutput.push(helpDocString);
+
+    // --- open commands ---
+    } else if (cmd === "open") { 
+      newOutput.push("please specify which project to open");
+    } else if (cmd.startsWith("open ")) { 
+      const subcommand = cmd.split(" ")[1].trim()
+
+      const projectToOpen = projects.find(proj => proj.name === subcommand);
+      if (!projectToOpen) {
+        newOutput.push(`project not found: ${subcommand}`);
+        setOutput(newOutput);
+        return;
+      }
+
+      if (!projectToOpen.repo && !projectToOpen.link) {
+        newOutput.push("apologies, there is not link for this project yet");
+      }
+
+      if (projectToOpen.link) {
+        window.open(projectToOpen.link, "_self")
+      } else if (projectToOpen.repo) {
+        window.open(projectToOpen.repo, "_self")
+      }
     } else {
       newOutput.push(`command not found: ${cmd}`);
     }
@@ -180,8 +190,8 @@ export default function Terminal() {
   // TODO: make terminal height of screen minus h-14
 
   return (
-    <section className="w-full border-l border-r border-b border-dashed bg-card overflow-hidden">
-      <div className="p-4 font-mono text-xs overflow-auto">
+    <section className="h-[calc(100vh-3.5rem)] w-full border-l border-r border-b border-dashed bg-card overflow-hidden">
+      <div className="h-full p-4 font-mono text-xs overflow-auto">
         <div className="space-y-1">
           {output.map((line, i) => (
             <pre key={i} className="whitespace-pre-wrap text-xs">{line}</pre>
