@@ -4,7 +4,6 @@ import projects from "@/lib/projects";
 import { randomInt } from "crypto";
 import { useState } from "react";
 
-// TODO: add open, ls -a, ls -l commands
 // TODO: ADD TAB Auto complete????
 // TODO: ADD CTRL C to cancel and CTRL U to CLEAR?
 
@@ -16,7 +15,7 @@ const perm_types: string[] = [
 ]
 
 export default function Terminal() {
-  const [command, setCommand] = useState<string>("");
+  const [command, setCommand] = useState<string | undefined>("");
   const [history, setHistory] = useState<string[]>([]);
   const [output, setOutput] = useState<string[]>([
     "Welcome to my terminal.",
@@ -26,6 +25,9 @@ export default function Terminal() {
 
   const handleCommand = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
+      if (!command) {
+        return;
+      }
       const cmd = command.trim().toLowerCase();
 
       if (cmd) {
@@ -43,14 +45,33 @@ export default function Terminal() {
       }
     } else if (e.key === "ArrowDown") {
       e.preventDefault();
-      if (history.length > 0) {
-        const newIndex: number = historyIndex - 1;
+
+      if (historyIndex >= 0) {
+        const newIndex = historyIndex - 1;
         setHistoryIndex(newIndex);
-        setCommand(history[history.length - 1 - newIndex]);
-      } else if (historyIndex === 0) {
-        setHistoryIndex(-1);
-        setCommand("");
+        if (newIndex === -1) {
+          setCommand("");
+        } else {
+          setCommand(history[history.length - 1 - newIndex]);
+        }
       }
+    } else if (e.ctrlKey && e.key === "u") {
+      e.preventDefault();
+
+      setHistoryIndex(-1);
+      setCommand("");
+    } else if (e.ctrlKey && e.key === "c") {
+      if (!command) {
+        return;
+      }
+      const cmd = command.trim().toLowerCase();
+
+      if (cmd) {
+        setHistory(prev => [...prev, cmd]);
+        setHistoryIndex(-1);
+        setOutput([...output, `$ ${cmd}`]);
+      }
+      setCommand("");
     }
   }
 
@@ -154,4 +175,4 @@ export default function Terminal() {
       </div>
     </section>
   );
-} 
+}
