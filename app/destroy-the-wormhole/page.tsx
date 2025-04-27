@@ -7,7 +7,7 @@ export default function Unity2() {
         const iframe = document.createElement('iframe');
         iframe.src = `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/unity2/index.html`;
         iframe.style.width = '100%';
-        iframe.style.height = '100vh';
+        iframe.style.height = '100%';
         iframe.style.border = 'none';
         iframe.style.margin = 'auto'; 
 
@@ -15,9 +15,9 @@ export default function Unity2() {
     }, []);
 
     return (
-        <div className="flex h-screen">
+        <div className="flex">
             {/* Game Description */}
-            <div className="w-1/4 p-6 bg-gray-200 overflow-y-auto">
+            <div className="w-1/4 p-6 overflow-y-auto">
                 <h1 className="text-3xl font-bold mb-4">Destroy The Wormhole</h1>
                 <h3 className="text-xl font-med mb-4">Authors: Akshey Deokule</h3>
                 <p className="text-lg mb-4">
@@ -31,10 +31,10 @@ export default function Unity2() {
 
             </div>
             {/* Game Section */}
-            <div id="unity-container" className="flex-3 w-3/5 flex" style={{ minHeight: '900px' }} />
+            <div id="unity-container" className="flex-3 w-3/5 flex" />
 
             {/* Instructions Section */}
-            <div className="w-1/6 p-6 bg-gray-200 overflow-y-auto">
+            <div className="w-1/6 p-6 overflow-y-auto">
 
                 {/* Instructions */}
                 <h3 className="text-xl font-bold mb-4">Controls:</h3>
