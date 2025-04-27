@@ -2,7 +2,7 @@
 interface Project {
   name: string;
   desc: string;
-  tech: string[]; // Added tech back
+  tech: string[]; 
   date: string;
   link?: string;
   repo?: string;
