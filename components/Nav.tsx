@@ -22,10 +22,12 @@ export default function Nav() {
         setName(titles[nextIndex]);
     }
 
-    // TODO: add blog button and a blog page
+    // TODO: add a blog page
     return (
         <div className="relative flex h-14 items-center gap-2 px-4 py-2 border border-dashed bg-muted/50">
+            <a href="/">
             <TerminalIcon className="h-4 w-4" />
+            </a>
             <Button onClick={handleClick}>
                 <span className="font-mono text-sm animate-pulse-opacity">
                     {name}

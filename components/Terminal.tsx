@@ -5,7 +5,6 @@ import { randomInt } from "crypto";
 import { useState } from "react";
 
 // TODO: ADD TAB Auto complete????
-// TODO: ADD CTRL C to cancel and CTRL U to CLEAR?
 
 const perm_types: string[] = [
   '-r--r--r--',
@@ -151,10 +150,11 @@ export default function Terminal() {
     setOutput(newOutput);
   }
 
+  // TODO: make terminal height of screen minus h-14
 
   return (
     <section className="w-full border-l border-r border-b border-dashed bg-card overflow-hidden">
-      <div className="p-4 h-screen font-mono text-xs overflow-auto">
+      <div className="p-4 font-mono text-xs overflow-auto">
         <div className="space-y-1">
           {output.map((line, i) => (
             <pre key={i} className="whitespace-pre-wrap text-xs">{line}</pre>
