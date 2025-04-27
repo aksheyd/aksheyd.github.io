@@ -1,8 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
 import React from 'react';
 
-// TODO: make this less ugly
-
 export default function ProvidencePage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-3xl">
