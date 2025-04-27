@@ -2,6 +2,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google'; 
 import { ThemeProvider } from "@/components/ThemeProvider"
+import Nav from '@/components/Nav';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -19,13 +20,13 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        {/* Example ThemeProvider setup for Shadcn dark/light mode */}
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
+          <Nav/>
           {children}
         </ThemeProvider>
       </body>
