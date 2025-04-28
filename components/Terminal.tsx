@@ -5,6 +5,7 @@ import socialAccounts from "@/lib/socials";
 import { useState } from "react";
 
 // TODO: ADD TAB Auto complete????
+// TODO: convert folder and socials into folder structure?
 
 const perm_types: string[] = [
   '-r--r--r--',
