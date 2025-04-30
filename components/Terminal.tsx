@@ -121,6 +121,7 @@ export default function Terminal() {
       const len: number = cmd_split.length;
       const fileCmd : Set<string> = new Set(['ls', 'open']);
 
+
       // -- system commands -- 
       if (len === 1) {
         let stringMatchScore = -1;
@@ -148,12 +149,11 @@ export default function Terminal() {
       }
       // -- ls  --
       else if (
-        len === 2 &&
-        fileCmd.has(cmd_split[0]) &&
-        (cmd_split[1] === "" || projects.some(proj => proj.name === cmd_split[1]))
+        ((len === 2 && fileCmd.has(cmd_split[0])) || (len >= 2 && cmd_split[0] === 'ls')) &&
+        (cmd_split[len - 1] === "" || projects.some(proj => proj.name === cmd_split[len - 1]))
       ) {
         if (cmd_split[0] === 'ls') {
-          setCommand("ls " + projects[fileIndex].name);
+            setCommand(cmd_split.slice(0, len - 1).join(" ") + " " + projects[fileIndex].name);
           setFileIndex((fileIndex + 1) % projects.length);
         }
       }
