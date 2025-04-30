@@ -1,22 +1,34 @@
 "use client";
 
-import projects from "@/lib/projects";
-import socialAccounts from "@/lib/socials";
-import { useState } from "react";
+import { FileNode } from "@/lib/FileSystem";
+import { Project } from "@/lib/Projects";
+import projects from "@/lib/Projects";
+import socialAccounts from "@/lib/Socials";
+import { perm_types } from "@/lib/Utils";
+import { useRef, useState, useEffect } from "react";
 
 // TODO: ADD TAB Auto complete????
 // TODO: convert folder and socials into folder structure?
 
-const perm_types: string[] = [
-  '-r--r--r--',
-  'drwxr-xr-x',
-  '-rw-r--r--',
-  'drwxr-xr-x@'
-]
+const root : FileNode = new FileNode("root", undefined, undefined);
+const projFolder : FileNode = new FileNode("projects", root, undefined);
+const videoGamesFolder = new FileNode("video-games", projFolder, undefined);
+
+root.children.push(projFolder);
+
+projFolder.children.push(videoGamesFolder);
+projFolder.children.push(new FileNode("web-dev", projFolder, undefined));
+projFolder.children.push(new FileNode("ai", projFolder, undefined));
+
+
+
+videoGamesFolder.children.push(new FileNode(projects[0].name, videoGamesFolder, projects[0]));
+
+
 
 // populate set with all social commands
-let socials : Set<string> = new Set<string>
-let socialsHelp : string =  "";
+let socials: Set<string> = new Set<string>
+let socialsHelp: string = "";
 socialAccounts.forEach(acct => {
   socials.add(acct.name);
   socialsHelp += `  ${acct.name}${acct.spacing}Open my ${acct.pretty} account\n`
@@ -33,8 +45,9 @@ const commands: string[] = [
   ...Array.from(socials)
 ]
 
-const helpDocString : string = `  Available commands:
+const helpDocString: string = `  Available commands:
   ------------- 
+  cd [..]           Enter/exit a folder
   ls [-a] [-l]      List all projects
   ls <project>      Show project details
   open <project>    Open link to project
@@ -55,9 +68,16 @@ export default function Terminal() {
     "Type 'help' for available commands"
   ]);
   const [historyIndex, setHistoryIndex] = useState<number>(-1);
-
   const [fileIndex, setFileIndex] = useState<number>(0);
+  const [currentFolder, setCurrentFolder] = useState<FileNode>(root);
 
+  // fix scrolling behaviour when long text
+  const terminalEndRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    terminalEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [output]);
+
+  // for key presses (not commands)
   const handleCommand = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       if (!command) {
@@ -104,14 +124,16 @@ export default function Terminal() {
       if (cmd) {
         setHistory(prev => [...prev, cmd]);
         setHistoryIndex(-1);
-        setOutput([...output, `$ ${cmd}`]);
+        setOutput([...output, `${currentFolder.filename} $ ${cmd}`]);
       }
       setCommand("");
     } else if (e.key === "Tab") {
       e.preventDefault();
-      if (!command) {
+      if (!command || !command.trim()) {
+        setCommand(command + "  ");
         return;
       }
+
       const cmd: string = command.toLowerCase();
       const cmd_split: string[] = cmd.split(" ");
       // how do i split "ls " vs "ls"
@@ -119,7 +141,7 @@ export default function Terminal() {
       // trim down cmd_split
       // const trimmedCmdSplit = cmd_split.filter(part => part !== "");
       const len: number = cmd_split.length;
-      const fileCmd : Set<string> = new Set(['ls', 'open']);
+      const fileCmd: Set<string> = new Set(['ls', 'open']);
 
 
       // -- system commands -- 
@@ -157,7 +179,7 @@ export default function Terminal() {
         (cmd_split[len - 1] === "" || projects.some(proj => proj.name === cmd_split[len - 1]))
       ) {
         if (cmd_split[0] === 'ls') {
-            setCommand(cmd_split.slice(0, len - 1).join(" ") + " " + projects[fileIndex].name);
+          setCommand(cmd_split.slice(0, len - 1).join(" ") + " " + projects[fileIndex].name);
           setFileIndex((fileIndex + 1) % projects.length);
         }
       }
@@ -171,39 +193,40 @@ export default function Terminal() {
     }
   }
 
+  // actually handle what command was entered
   const processCommand = (cmd: string) => {
-    let newOutput: string[] = [...output, `$ ${cmd}`]
+    let newOutput: string[] = [...output, `${currentFolder.filename} $ ${cmd}`]
 
     // --- ls commands ---
     if (cmd === "ls") {
-      newOutput.push(projects.map(p => p.name).join("  "));
+      newOutput.push(currentFolder.children.map(child => child.filename).join(" "));
     } else if (cmd.startsWith("ls ")) {
       const subcommand = cmd.split(" ")[1].trim();
-      
+
       if (subcommand === "-a") {
-        projects.forEach(project => {
-          newOutput.push(
-            `name: ${project.name}`,
-            `desc: ${project.desc}`,
-            `date: ${project.date}`,
-            `tech: ${project.tech.join(", ")}`,
-            `url: ${project.link}`,
-            " ",
-          );
+        newOutput.push(".");
+        newOutput.push("..");
+        newOutput.push(".lit");
+        currentFolder.children.forEach(child => {
+          newOutput.push(child.filename);
         })
       } else if (subcommand === "-l") {
-        projects.map(project => {
+        currentFolder.children.map(project => {
           const permission: string = perm_types[Math.floor(Math.random() * perm_types.length)]
-          const type : number = Math.floor(Math.random() * 30)
-          const size : number = Math.floor(Math.random() * 600)
+          const type: number = Math.floor(Math.random() * 30)
+          const size: number = Math.floor(Math.random() * 600)
 
           newOutput.push(
-            `${permission}  ${type} aksheydeokule  staff  ${size} ${project.date} aksheydeokule staff ${project.name}`,
+            `${permission}  ${type} aksheydeokule  staff  ${size} aksheydeokule staff ${project.filename}`,
           );
         })
       } else {
+        const files = currentFolder.children
+          .filter(c => c.data !== undefined && c.data !== null)
+          .map(p => p.data as Project);
+
         const projectName = subcommand;
-        const project = projects.find(p => p.name === projectName)
+        const project = files.find(p => p.name === projectName)
         if (project) {
           newOutput.push(
             `name: ${project.name}`,
@@ -213,30 +236,60 @@ export default function Terminal() {
             `url: ${project.link}`,
           );
         } else {
-          newOutput.push(`not found: ${projectName}`);
+          newOutput.push(`project not found: ${projectName}`);
         }
       }
-    
+    }
+    // -- cd commands ---
+    else if (cmd === "cd" || cmd === "cd .." || cmd.startsWith("cd ") && cmd.split(" ").filter(Boolean).join(" ") === "cd ..") {
+      if (currentFolder.filename !== "root") {
+        if (currentFolder.parent) {
+        setCurrentFolder(currentFolder.parent);
+        } else {
+          console.error(`filenode ${currentFolder.filename} has no parent but is not root.`)
+        }
+      }
+    } 
+    else if (cmd.startsWith("cd ")) {
+      const reducedCmd = cmd.split(" ").filter(Boolean).join(" ");
+      if (!(reducedCmd === "cd ." || reducedCmd === "cd ..")) {
+          const folders = currentFolder.children
+          .filter(c => c.data === undefined);
+          console.log(folders);
+  
+          const folderName = reducedCmd.split(" ")[1].trim();
+          const folder = folders.find(p => p.filename === folderName)
+          if (folder) {
+            setCurrentFolder(folder);
+          } else {
+            newOutput.push(`not a folder: ${folderName}`);
+          }
+      }
+    }
+    else if (cmd === "cd ." || cmd.startsWith("cd ") && cmd.split(" ").filter(Boolean).join(" ") === "cd .") {
+      // do nothing
+    }
     // --- social network commands ---
-    } else if (socials.has(cmd)) {
+    else if (socials.has(cmd)) {
       const acct = socialAccounts.find(s => s.name === cmd);
       if (!acct) {
         return;
       }
 
-      newOutput.push(`opening my ${acct.pretty}`); 
+      newOutput.push(`opening my ${acct.pretty}`);
       window.open(acct.website);
-    
-    // --- utility commands ---
+
+      // --- utility commands ---
     } else if (cmd === "clear") {
-      newOutput = [];
+      setOutput([]);
+      return;
     } else if (cmd === "help") {
       newOutput.push(helpDocString);
 
-    // --- open commands ---
-    } else if (cmd === "open") { 
+      // --- open commands ---
+    } else if (cmd === "open") {
       newOutput.push("please specify which project to open");
-    } else if (cmd.startsWith("open ")) { 
+    } else if (cmd.startsWith("open ")) {
       const subcommand = cmd.split(" ")[1].trim()
 
       const projectToOpen = projects.find(proj => proj.name === subcommand);
@@ -251,9 +304,9 @@ export default function Terminal() {
       }
 
       if (projectToOpen.link) {
-        window.open(projectToOpen.link, "_self")
+        window.open(projectToOpen.link, "_blank")
       } else if (projectToOpen.repo) {
-        window.open(projectToOpen.repo, "_self")
+        window.open(projectToOpen.repo, "_blank")
       }
     } else {
       newOutput.push(`command not found: ${cmd}`);
@@ -275,7 +328,7 @@ export default function Terminal() {
           ))}
         </div>
         <div className="flex items-center gap-2 mt-2">
-          <span>$</span>
+          <span>{`${currentFolder.filename}`} $</span>
           <input
             type="text"
             value={command}
@@ -286,6 +339,7 @@ export default function Terminal() {
             autoFocus
           />
         </div>
+        <div ref={terminalEndRef} />
       </div>
     </section>
   );
