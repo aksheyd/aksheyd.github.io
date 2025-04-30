@@ -148,6 +148,10 @@ export default function Terminal() {
         setCommand(commands[stringMatchIndex]);
       }
       // -- ls  --
+      // ls <project>
+      // ls ____ <project>
+      // open <project>
+      // open ____ <project>
       else if (
         ((len === 2 && fileCmd.has(cmd_split[0])) || (len >= 2 && cmd_split[0] === 'ls')) &&
         (cmd_split[len - 1] === "" || projects.some(proj => proj.name === cmd_split[len - 1]))
