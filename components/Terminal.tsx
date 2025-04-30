@@ -14,16 +14,6 @@ const perm_types: string[] = [
   'drwxr-xr-x@'
 ]
 
-const commands: string[] = [
-  "ls",
-  "open",
-  "x",
-  "github",
-  "linkedin",
-  "clear",
-  "help"
-]
-
 // populate set with all social commands
 let socials : Set<string> = new Set<string>
 let socialsHelp : string =  "";
@@ -31,6 +21,17 @@ socialAccounts.forEach(acct => {
   socials.add(acct.name);
   socialsHelp += `  ${acct.name}${acct.spacing}Open my ${acct.pretty} account\n`
 })
+
+const commands: string[] = [
+  "ls",
+  "open",
+  "x",
+  "github",
+  "linkedin",
+  "clear",
+  "help",
+  ...Array.from(socials)
+]
 
 const helpDocString : string = `  Available commands:
   ------------- 
@@ -54,6 +55,8 @@ export default function Terminal() {
     "Type 'help' for available commands"
   ]);
   const [historyIndex, setHistoryIndex] = useState<number>(-1);
+
+  const [fileIndex, setFileIndex] = useState<number>(0);
 
   const handleCommand = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -109,25 +112,58 @@ export default function Terminal() {
       if (!command) {
         return;
       }
-      const cmd = command.trim().toLowerCase();
-      const len = cmd.split(" ").length;
-      if (len == 0) {
-        return;
-      }
-      // -- system commands -- 
-      // TODO
+      const cmd: string = command.toLowerCase();
+      const cmd_split: string[] = cmd.split(" ");
+      // how do i split "ls " vs "ls"
 
+      // trim down cmd_split
+      // const trimmedCmdSplit = cmd_split.filter(part => part !== "");
+      const len: number = cmd_split.length;
+      const fileCmd : Set<string> = new Set(['ls', 'open']);
+
+      // -- system commands -- 
+      if (len === 1) {
+        let stringMatchScore = -1;
+        let stringMatchIndex = -1;
+        for (let i = 0; i < commands.length; i++) {
+          let j = 0;
+          let tempScore = 0;
+
+          while (j < commands[i].length) {
+            if (commands[i][j] === cmd[j]) {
+              tempScore += 1;
+              j += 1;
+            } else {
+              break;
+            }
+          }
+
+          if (tempScore > stringMatchScore) {
+            stringMatchScore = tempScore;
+            stringMatchIndex = i;
+          }
+        }
+
+        setCommand(commands[stringMatchIndex]);
+      }
       // -- ls  --
-      if (len > 0) {
-        const file = cmd.split(" ");
-        console.log(file)
-        if (!file) {
-          return;
+      else if (
+        len === 2 &&
+        fileCmd.has(cmd_split[0]) &&
+        (cmd_split[1] === "" || projects.some(proj => proj.name === cmd_split[1]))
+      ) {
+        if (cmd_split[0] === 'ls') {
+          setCommand("ls " + projects[fileIndex].name);
+          setFileIndex((fileIndex + 1) % projects.length);
         }
       }
-
-      
-
+      // if (len > 0) {
+      //   const file = cmd.split(" ");
+      //   console.log(file)
+      //   if (!file) {
+      //     return;
+      //   }
+      // }
     }
   }
 
