@@ -14,6 +14,16 @@ const perm_types: string[] = [
   'drwxr-xr-x@'
 ]
 
+const commands: string[] = [
+  "ls",
+  "open",
+  "x",
+  "github",
+  "linkedin",
+  "clear",
+  "help"
+]
+
 // populate set with all social commands
 let socials : Set<string> = new Set<string>
 let socialsHelp : string =  "";
@@ -94,6 +104,30 @@ export default function Terminal() {
         setOutput([...output, `$ ${cmd}`]);
       }
       setCommand("");
+    } else if (e.key === "Tab") {
+      e.preventDefault();
+      if (!command) {
+        return;
+      }
+      const cmd = command.trim().toLowerCase();
+      const len = cmd.split(" ").length;
+      if (len == 0) {
+        return;
+      }
+      // -- system commands -- 
+      // TODO
+
+      // -- ls  --
+      if (len > 0) {
+        const file = cmd.split(" ");
+        console.log(file)
+        if (!file) {
+          return;
+        }
+      }
+
+      
+
     }
   }
 
@@ -188,7 +222,9 @@ export default function Terminal() {
     setOutput(newOutput);
   }
 
-  // TODO: make terminal height of screen minus h-14
+  // useEffect(() => {
+  //   if ()
+  // }, []);
 
   return (
     <section className="h-[calc(100vh-3.5rem)] w-full border-l border-r border-b border-dashed bg-card overflow-hidden">
