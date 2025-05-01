@@ -13,18 +13,25 @@ import { useRef, useState, useEffect } from "react";
 const root : FileNode = new FileNode("root", undefined, undefined);
 const projFolder : FileNode = new FileNode("projects", root, undefined);
 const videoGamesFolder = new FileNode("video-games", projFolder, undefined);
+const webDevFolder = new FileNode("web-dev", projFolder, undefined);
+const aiFolder = new FileNode("ai", projFolder, undefined);
 
 root.children.push(projFolder);
 
 projFolder.children.push(videoGamesFolder);
-projFolder.children.push(new FileNode("web-dev", projFolder, undefined));
-projFolder.children.push(new FileNode("ai", projFolder, undefined));
+projFolder.children.push(webDevFolder);
+projFolder.children.push(aiFolder);
 
 
 
-videoGamesFolder.children.push(new FileNode(projects[0].name, videoGamesFolder, projects[0]));
+videoGamesFolder.children.push(new FileNode(projects[1].name, videoGamesFolder, projects[1]));
+videoGamesFolder.children.push(new FileNode(projects[2].name, videoGamesFolder, projects[2]));
+videoGamesFolder.children.push(new FileNode(projects[3].name, videoGamesFolder, projects[3]));
 
+webDevFolder.children.push(new FileNode(projects[0].name, webDevFolder, projects[0]));
+webDevFolder.children.push(new FileNode(projects[5].name, webDevFolder, projects[5]));
 
+aiFolder.children.push(new FileNode(projects[4].name, aiFolder, projects[4]));
 
 // populate set with all social commands
 let socials: Set<string> = new Set<string>
@@ -48,8 +55,10 @@ const commands: string[] = [
 const helpDocString: string = `  Available commands:
   ------------- 
   cd [..]           Enter/exit a folder
-  ls [-a] [-l]      List all projects
-  ls <project>      Show project details
+  ls [-a] [-l]      List files/folders
+
+  ------------- 
+  cat <project>     Show project details
   open <project>    Open link to project
 
   -------------
@@ -222,21 +231,14 @@ export default function Terminal() {
         })
       } else {
         const files = currentFolder.children
-          .filter(c => c.data !== undefined && c.data !== null)
-          .map(p => p.data as Project);
-
-        const projectName = subcommand;
-        const project = files.find(p => p.name === projectName)
+        .filter(c => c.data === undefined);
+  
+        const folderName = subcommand;
+        const project = files.find(p => p.filename === folderName)
         if (project) {
-          newOutput.push(
-            `name: ${project.name}`,
-            `desc: ${project.desc}`,
-            `date: ${project.date}`,
-            `tech: ${project.tech.join(", ")}`,
-            `url: ${project.link}`,
-          );
+          newOutput.push(project.children.map(child => child.filename).join(" "));
         } else {
-          newOutput.push(`project not found: ${projectName}`);
+          newOutput.push(`folder not found: ${folderName}`);
         }
       }
     }
@@ -285,7 +287,32 @@ export default function Terminal() {
       return;
     } else if (cmd === "help") {
       newOutput.push(helpDocString);
+    } 
+    else if (cmd === "cat") {
+      newOutput.push("please specify which project to inspect");
+    }
+    // -- cat commands ---
+    else if (cmd.startsWith("cat ")) {
+      const subcommand = cmd.split(" ")[1].trim();
 
+      const files = currentFolder.children
+      .filter(c => c.data !== undefined && c.data !== null)
+      .map(p => p.data as Project);
+
+      const projectName = subcommand;
+      const project = files.find(p => p.name === projectName)
+      if (project) {
+        newOutput.push(
+          `name: ${project.name}`,
+          `desc: ${project.desc}`,
+          `date: ${project.date}`,
+          `tech: ${project.tech.join(", ")}`,
+          `url: ${project.link}`,
+            ...(project.repo ? [`repo: ${project.repo}`] : []),
+        );
+      } else {
+        newOutput.push(`project not found: ${projectName}`);
+      }
       // --- open commands ---
     } else if (cmd === "open") {
       newOutput.push("please specify which project to open");
