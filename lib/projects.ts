@@ -10,7 +10,7 @@ interface Project {
 
 const projects: Project[] = [
   {
-    name: "what's-up", 
+    name: "whats-up", 
     desc: "WhatsUp is a web application that makes local ordinances and laws accessible and interactive for community members. Created as part of the Data Driven Hackathon at the University of Michigan, Ann Arbor on 3/22/25. Features: Django backend deployed on Fly.io with LiteFS replication, Selenium/BeautifulSoup4 scraping pipeline, and an LLM-powered interaction system.",
     date: "March 2025",
     link: "https://whatsup-crimson-water-2982.fly.dev/",
@@ -18,7 +18,7 @@ const projects: Project[] = [
     tech: ["Django", "Python", "SQLite", "Fly.io", "Selenium", "BeautifulSoup"],
   },
   {
-    name: "dueler's-providence",
+    name: "duelers-providence",
     desc: "Collaborated with a 5-person student team in Unity using C#. Focused on level design, environment details, lighting, lore, and trailer creation. Click the link for more details and downloads.",
     date: "May 2025",
     link: "/providence",
