@@ -1,11 +1,12 @@
 import socialAccounts from "@/lib/Socials";
 import projects from "@/lib/Projects";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function Page() {
   return (
-    <section className="grid grid-cols-12 h-[calc(100vh-3.5rem)] w-full border-l border-r border-b border-dashed bg-card overflow-hidden">
-      <div className="h-full col-start-3 col-span-3 py-6 px-10 overflow-auto flex flex-col justify-center">
+    <section className="h-[calc(100vh-3.5rem)] w-full flex justify-center border-l border-r border-b border-dashed bg-card overflow-hidden">
+      <div className="h-full mt-10 overflow-auto text-center">
         <div className="mb-6">
           <p className="text-xl font-semibold font-serif">akshey deokule</p>
           <p className="text-base">software engineer</p>
@@ -30,45 +31,25 @@ export default function Page() {
         </div>
 
         <div>
-          <h2 className="text-xl font-medium mb-2 font-serif">projects</h2>
-          <ul className="space-y-1">
-            {projects.map((project) => (
-              <li key={project.name}>
-                {project.link && project.link.startsWith("/") ? (
-                  <Link href={project.link} className="text-xs hover:underline">
-                    {project.name}
-                  </Link>
-                ) : project.link ? (
-                  <a
-                    href={project.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs hover:underline">
-                    {project.name}
-                  </a>
-                ) : (
-                  <span>{project.name} (No Link)</span>
-                )}
-              </li>
-            ))}
+          <h2 className="text-xl font-medium mb-2 font-serif">skills</h2>
+          <ul className="space-y-1 mb-6">
+            <li className="text-xs">python</li>
+            <li className="text-xs">typescript</li>
           </ul>
         </div>
-      </div>
 
-      {/* Right Column: Terminal Prompt */}
-      <div className="h-full col-start-7 col-span-3 py-6 px-10 flex flex-col justify-center items-center text-center">
-        <div className="space-y-5">
-           <p className="text-2xl font-semibold">Interact with my work!</p>
-           <p className="text-lg text-muted-foreground">
-             Explore projects and more through a simulated terminal experience.
-           </p>
-           {/* Proper link to terminal page */}
-           <Link 
+        <div>
+          <h2 className="text-xl font-medium mb-2 font-serif">projects</h2>
+          <Button
+          variant="link"
+          size="icon"
+          >
+          <Link 
              href="/terminal" 
-             className="inline-block px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
            >
-             Launch Terminal
+             launch terminal
            </Link>
+           </Button>
         </div>
       </div>
     </section>
