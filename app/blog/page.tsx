@@ -1,7 +1,7 @@
 export default function Blog() {
     return (
-        <div>
-            <p>Blog Page</p>
+        <div className="px-6 py-6">
+            <p>Coming soon.</p>
         </div>
     );
 
