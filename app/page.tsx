@@ -1,5 +1,4 @@
 import socialAccounts from "@/lib/Socials";
-import projects from "@/lib/Projects";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
