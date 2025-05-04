@@ -7,6 +7,7 @@ import socialAccounts from "@/lib/Socials";
 import { perm_types } from "@/lib/Utils";
 import { useRef, useState, useEffect } from "react";
 
+
 // TODO: ADD TAB Auto complete????
 // TODO: convert folder and socials into folder structure?
 
@@ -340,32 +341,65 @@ export default function Terminal() {
     setOutput(newOutput);
   }
 
-  // useEffect(() => {
-  //   if ()
-  // }, []);
-
-  return (
-    <section className="h-[calc(100vh-3.5rem)] w-full border-l border-r border-b border-dashed bg-card overflow-hidden">
-      <div className="h-full p-4 font-mono text-xs overflow-auto">
-        <div className="space-y-1">
-          {output.map((line, i) => (
-            <pre key={i} className="whitespace-pre-wrap text-xs">{line}</pre>
-          ))}
-        </div>
-        <div className="flex items-center gap-2 mt-2">
-          <span>{`${currentFolder.filename}`} $</span>
-          <input
-            type="text"
-            value={command}
-            onChange={(e) => setCommand(e.target.value)}
-            onKeyDown={handleCommand}
-            className="flex-1 bg-transparent outline-none"
-            spellCheck={false}
-            autoFocus
-          />
-        </div>
-        <div ref={terminalEndRef} />
+  return (  
+    <div className="flex h-[calc(100vh-3.5rem)] w-full border-l border-r border-b border-dashed overflow-hidden">
+      {/* Terminal Section (75%) */}
+      <div className="flex-1 w-3/4">
+        <section className="h-full">
+          <div className="h-full p-4 font-mono text-xs overflow-auto">
+            <div className="space-y-1">
+              {output.map((line, i) => (
+                <pre key={i} className="whitespace-pre-wrap text-xs">{line}</pre>
+              ))}
+            </div>
+            <div className="flex items-center gap-2 mt-2">
+              <span>{`${currentFolder.filename}`} $</span>
+              <input
+                type="text"
+                value={command}
+                onChange={(e) => setCommand(e.target.value)}
+                onKeyDown={handleCommand}
+                className="flex-1 bg-transparent outline-none"
+                spellCheck={false}
+                autoFocus
+              />
+            </div>
+            <div ref={terminalEndRef} />
+          </div>
+        </section>
       </div>
-    </section>
+
+      {/* Help Section (25%) */}
+      <div className="w-1/4 p-4 border-l border-dashed font-mono">
+        <h2 className="text-xl font-bold mb-4">Guide</h2>
+        <div className="space-y-4">
+          <div>
+            <h3 className="text-md font-semibold mb-1">About</h3>
+            <p className="text-xs mb-4">Type unix-like commands to discover what I've built.</p>
+          </div>
+
+          <div className="space-y-4">
+            <h3 className="text-md font-semibold mb-1">Example Usage</h3>
+            <ul className="list-disc list-inside text-xs space-y-1 mb-4">
+              <li><code>cd projects</code></li>
+              <li><code>cd web-dev</code></li>
+              <li><code>cat whats-up</code></li>
+              <li><code>open whats-up</code></li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-md font-semibold mb-1">Extras</h3>
+            <p className="text-xs">Type <code>help</code> for all available commands</p>
+            <p className="text-xs">Type <code>clear</code> to reset the screen</p>
+          </div>
+
+          <div>
+            <h3 className="text-md font-semibold mb-1">Coming Soon</h3>
+            <p className="text-xs">Tab auto-complete</p>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
