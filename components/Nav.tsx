@@ -25,7 +25,7 @@ export default function Nav() {
     // TODO: add a blog page
     return (
         <div className="relative flex h-14 items-center gap-2 px-4 py-2 border border-dashed bg-muted/50">
-            <TerminalIcon className="absolute left-1 h-4 w-4" />
+            <TerminalIcon className="absolute left-4 h-4 w-4" />
 
             {/* <Button onClick={handleClick}>
                 <span className="font-mono text-sm animate-pulse-opacity">
