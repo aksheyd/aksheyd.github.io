@@ -81,10 +81,16 @@ export default function Terminal() {
 
   // fix scrolling behaviour when long text
   const terminalEndRef = useRef<HTMLDivElement>(null);
+  const inputElementRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     terminalEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [output]);
 
+  const handleFocus = () => {
+    setTimeout(() => {
+      inputElementRef.current?.scrollIntoView({ block: 'nearest' })
+    }, 100);
+  }
   // for key presses (not commands)
   const handleCommand = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -342,11 +348,10 @@ export default function Terminal() {
   }
 
   return (  
-    <div className="grid grid-cols-1 lg:grid-cols-2 h-[calc(100vh-3.5rem)] w-full border-l border-r border-b border-dashed overflow-hidden">
+    <div className="grid grid-cols-1 lg:grid-cols-2 h-[calc(100vh-3.5rem)] w-full border-l border-r border-b border-dashed">
       {/* Terminal Section (75%) */}
-      <div className="cols-start-1">
-        <section className="h-full">
-          <div className="h-full p-4 font-mono text-xs overflow-auto">
+      <div className="cols-start-1 h-full overflow-y-auto">
+          <div className="h-full p-4 font-mono text-xs">
             <div className="space-y-1">
               {output.map((line, i) => (
                 <pre key={i} className="whitespace-pre-wrap text-xs">{line}</pre>
@@ -362,15 +367,16 @@ export default function Terminal() {
                 className="flex-1 bg-transparent outline-none"
                 spellCheck={false}
                 autoFocus
+                onFocus={handleFocus}
+                ref={inputElementRef}
               />
             </div>
             <div ref={terminalEndRef} />
           </div>
-        </section>
       </div>
 
       {/* Help Section (25%) */}
-      <div className="cols-start-2 hidden lg:block p-4 border-l border-dashed font-mono">
+      <div className="cols-start-2 h-full hidden lg:block p-4 border-l border-dashed font-mono overflow-y-auto">
         <h2 className="text-xl font-bold mb-4">Guide</h2>
         <div className="space-y-4">
           <div>
