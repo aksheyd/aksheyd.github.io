@@ -342,9 +342,9 @@ export default function Terminal() {
   }
 
   return (  
-    <div className="flex h-[calc(100vh-3.5rem)] w-full border-l border-r border-b border-dashed overflow-hidden">
+    <div className="grid grid-cols-1 lg:grid-cols-2 h-[calc(100vh-3.5rem)] w-full border-l border-r border-b border-dashed overflow-hidden">
       {/* Terminal Section (75%) */}
-      <div className="flex-1 w-3/4">
+      <div className="cols-start-1">
         <section className="h-full">
           <div className="h-full p-4 font-mono text-xs overflow-auto">
             <div className="space-y-1">
@@ -370,7 +370,7 @@ export default function Terminal() {
       </div>
 
       {/* Help Section (25%) */}
-      <div className="w-1/4 p-4 border-l border-dashed font-mono">
+      <div className="cols-start-2 hidden lg:block p-4 border-l border-dashed font-mono">
         <h2 className="text-xl font-bold mb-4">Guide</h2>
         <div className="space-y-4">
           <div>
