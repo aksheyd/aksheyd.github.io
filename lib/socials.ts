@@ -29,4 +29,4 @@ const socialAccounts : Account[] = [
 
 export default socialAccounts;
 
-export type { Account };
+export type { Account }; 
