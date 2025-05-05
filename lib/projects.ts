@@ -7,7 +7,7 @@ interface Project {
   link?: string;
   repo?: string;
 }
-
+ 
 const projects: Project[] = [
   {
     name: "whats-up", 

@@ -11,4 +11,4 @@ export const perm_types: string[] = [
   'drwxr-xr-x',
   '-rw-r--r--',
   'drwxr-xr-x@'
-]
+] 
