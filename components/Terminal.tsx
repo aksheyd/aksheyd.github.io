@@ -142,11 +142,11 @@ export default function Terminal() {
       }
       setCommand("");
     } else if (e.key === "Tab") {
-      // e.preventDefault();
-      // if (!command || !command.trim()) {
-      //   setCommand(command + "  ");
-      //   return;
-      // }
+      e.preventDefault();
+      if (!command || !command.trim()) {
+        setCommand(command + "  ");
+        return;
+      }
 
       // const cmd: string = command.toLowerCase();
       // const cmd_split: string[] = cmd.split(" ");
