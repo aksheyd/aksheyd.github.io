@@ -56,6 +56,13 @@ export default function Nav() {
                     </span>
                 </a>
             </Button>
+            <Button variant="link">
+                <a href="https://aksheyd.substack.com" target="">
+                    <span className="font-mono text-sm">
+                        Substack
+                    </span>
+                </a>
+            </Button>
             </div>
 
             <nav className="absolute right-10">
