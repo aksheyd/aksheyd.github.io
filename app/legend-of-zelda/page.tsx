@@ -19,7 +19,7 @@ export default function Unity() {
         <div className="flex h-screen">
             {/* Game Description */}
             {/* Description */}
-            <div className="w-1/4 p-6 bg-gray-200 overflow-y-auto">
+            <div className="w-1/4 p-6 overflow-y-auto">
                 <h1 className="text-3xl font-bold mb-4">Legend of Zelda</h1>
                 <h3 className="text-xl font-med mb-4">Authors: Akshey Deokule, Nathaniel Luyben</h3>
                 <p className="text-lg mb-4">
@@ -31,10 +31,10 @@ export default function Unity() {
 
             </div>
             {/* Game Section */}
-            <div id="unity-container" className="flex-3 bg-gray-100 w-3/5 h-full" />
+            <div id="unity-container" className="flex-3 w-3/5 h-full" />
 
             {/* Instructions Section */}
-            <div className="w-1/6 p-6 bg-gray-200 overflow-y-auto">
+            <div className="w-1/6 p-6 overflow-y-auto">
 
                 {/* Instructions */}
                 <h3 className="text-xl font-bold mb-4">Controls:</h3>
