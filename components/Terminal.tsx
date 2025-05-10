@@ -11,8 +11,8 @@ import { useRef, useState, useEffect } from "react";
 // TODO: ADD TAB Auto complete????
 // TODO: convert folder and socials into folder structure?
 
-const root : FileNode = new FileNode("root", undefined, undefined);
-const projFolder : FileNode = new FileNode("projects", root, undefined);
+const root = new FileNode("root", undefined, undefined);
+const projFolder = new FileNode("projects", root, undefined);
 const videoGamesFolder = new FileNode("video-games", projFolder, undefined);
 const webDevFolder = new FileNode("web-dev", projFolder, undefined);
 const aiFolder = new FileNode("ai", projFolder, undefined);
@@ -42,14 +42,14 @@ socialAccounts.forEach(acct => {
 
 const commands: string[] = [
   "ls",
+  "cd",
+  "cat",
   "open",
   "x",
   "github",
   "linkedin",
   "clear",
   "help",
-  "cd",
-  "cat",
   ...Array.from(socials)
 ]
 
@@ -77,6 +77,7 @@ export default function Terminal() {
     "Welcome to my terminal.",
     "Type 'help' for available commands"
   ]);
+  const [sublineText, setSublineText] = useState<string>("");
   const [historyIndex, setHistoryIndex] = useState<number>(-1);
   const [fileIndex, setFileIndex] = useState<number>(0);
   const [currentFolder, setCurrentFolder] = useState<FileNode>(root);
@@ -93,6 +94,12 @@ export default function Terminal() {
       inputElementRef.current?.scrollIntoView({ block: 'nearest' })
     }, 100);
   }
+
+  const setCommandAndClearSubline = (value: string) => {
+    setCommand(value);
+    setSublineText("");
+  };
+
   // for key presses (not commands)
   const handleCommand = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -106,13 +113,13 @@ export default function Terminal() {
         setHistoryIndex(-1);
         processCommand(cmd);
       }
-      setCommand("");
+      setCommandAndClearSubline("");
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       if (history.length > 0 && historyIndex < history.length - 1) {
         const newIndex: number = historyIndex + 1;
         setHistoryIndex(newIndex);
-        setCommand(history[history.length - 1 - newIndex]);
+        setCommandAndClearSubline(history[history.length - 1 - newIndex]);
       }
     } else if (e.key === "ArrowDown") {
       e.preventDefault();
@@ -121,16 +128,16 @@ export default function Terminal() {
         const newIndex = historyIndex - 1;
         setHistoryIndex(newIndex);
         if (newIndex === -1) {
-          setCommand("");
+          setCommandAndClearSubline("");
         } else {
-          setCommand(history[history.length - 1 - newIndex]);
+          setCommandAndClearSubline(history[history.length - 1 - newIndex]);
         }
       }
     } else if (e.ctrlKey && e.key === "u") {
       e.preventDefault();
 
       setHistoryIndex(-1);
-      setCommand("");
+      setCommandAndClearSubline("");
     } else if (e.ctrlKey && e.key === "c") {
       if (!command) {
         return;
@@ -142,11 +149,11 @@ export default function Terminal() {
         setHistoryIndex(-1);
         setOutput([...output, `${currentFolder.filename} $ ${cmd}`]);
       }
-      setCommand("");
+      setCommandAndClearSubline("");
     } else if (e.key === "Tab") {
       e.preventDefault();
       if (!command || !command.trim()) {
-        setCommand(command + "  ");
+        setCommandAndClearSubline(command + "  ");
         return;
       }
 
@@ -154,34 +161,31 @@ export default function Terminal() {
 
       // -- system commands -- 
       if (input.length === 1) {
-        const cmd = input[0];
-
-        let stringMatchScore = -1;
-        let stringMatchIndex = -1;
-        for (let i = 0; i < commands.length; i++) {
-          let j = 0;
-          let tempScore = 0;
-
-          while (j < cmd.length && j < commands[i].length) {
-            if (commands[i][j] === cmd[j]) {
-              tempScore += 1;
-              j += 1;
-            } else {
-              break;
-            }
-          }
-
-          if (j >= cmd.length && tempScore > stringMatchScore) {
-            stringMatchScore = tempScore;
-            stringMatchIndex = i;
-          }
-        }
-        
-        if (stringMatchIndex !== -1) {
-          setCommand(commands[stringMatchIndex]);
+        const candidates = commands.filter(c => c.startsWith(input[0]))
+        if (candidates.length === 1) {
+          // Autocomplete to closest match (ordering of commands matters)
+          setCommandAndClearSubline(`${candidates[0]}`);
+        } else if (candidates.length > 1) {
+          setSublineText(candidates.join('\n'))
         }
       }
-      
+
+      // -- file display --
+      else if (input.length >= 2) {
+        // The last word is what we're trying to autocomplete
+        const lastWord = input[input.length - 1];
+        const baseCommand = input.slice(0, -1).join(" ");
+
+        const candidates = currentFolder.children
+          .map(child => child.filename)
+          .filter(filename => filename.startsWith(lastWord));
+
+        if (candidates.length === 1) {
+          setCommandAndClearSubline(`${baseCommand} ${candidates[0]}`);
+        } else if (candidates.length > 1) {
+          setSublineText(candidates.join('\n'))
+        }
+      }
     }
   }
 
@@ -214,8 +218,8 @@ export default function Terminal() {
         })
       } else {
         const files = currentFolder.children
-        .filter(c => c.data === undefined);
-  
+          .filter(c => c.data === undefined);
+
         const folderName = subcommand;
         const project = files.find(p => p.filename === folderName)
         if (project) {
@@ -229,26 +233,26 @@ export default function Terminal() {
     else if (cmd === "cd" || cmd === "cd .." || cmd.startsWith("cd ") && cmd.split(" ").filter(Boolean).join(" ") === "cd ..") {
       if (currentFolder.filename !== "root") {
         if (currentFolder.parent) {
-        setCurrentFolder(currentFolder.parent);
+          setCurrentFolder(currentFolder.parent);
         } else {
           console.error(`filenode ${currentFolder.filename} has no parent but is not root.`)
         }
       }
-    } 
+    }
     else if (cmd.startsWith("cd ")) {
       const reducedCmd = cmd.split(" ").filter(Boolean).join(" ");
       if (!(reducedCmd === "cd ." || reducedCmd === "cd ..")) {
-          const folders = currentFolder.children
+        const folders = currentFolder.children
           .filter(c => c.data === undefined);
-          console.log(folders);
-  
-          const folderName = reducedCmd.split(" ")[1].trim();
-          const folder = folders.find(p => p.filename === folderName)
-          if (folder) {
-            setCurrentFolder(folder);
-          } else {
-            newOutput.push(`not a folder: ${folderName}`);
-          }
+        console.log(folders);
+
+        const folderName = reducedCmd.split(" ")[1].trim();
+        const folder = folders.find(p => p.filename === folderName)
+        if (folder) {
+          setCurrentFolder(folder);
+        } else {
+          newOutput.push(`not a folder: ${folderName}`);
+        }
       }
     }
     else if (cmd === "cd ." || cmd.startsWith("cd ") && cmd.split(" ").filter(Boolean).join(" ") === "cd .") {
@@ -270,7 +274,7 @@ export default function Terminal() {
       return;
     } else if (cmd === "help") {
       newOutput.push(helpDocString);
-    } 
+    }
     else if (cmd === "cat") {
       newOutput.push("please specify which project to inspect");
     }
@@ -279,8 +283,8 @@ export default function Terminal() {
       const subcommand = cmd.split(" ")[1].trim();
 
       const files = currentFolder.children
-      .filter(c => c.data !== undefined && c.data !== null)
-      .map(p => p.data as Project);
+        .filter(c => c.data !== undefined && c.data !== null)
+        .map(p => p.data as Project);
 
       const projectName = subcommand;
       const project = files.find(p => p.name === projectName)
@@ -291,7 +295,7 @@ export default function Terminal() {
           `date: ${project.date}`,
           `tech: ${project.tech.join(", ")}`,
           `url: ${project.link}`,
-            ...(project.repo ? [`repo: ${project.repo}`] : []),
+          ...(project.repo ? [`repo: ${project.repo}`] : []),
         );
       } else {
         newOutput.push(`project not found: ${projectName}`);
@@ -325,32 +329,33 @@ export default function Terminal() {
     setOutput(newOutput);
   }
 
-  return (  
+  return (
     <div className="grid grid-cols-1 lg:grid-cols-2 h-[calc(100vh-3.5rem)] w-full border-l border-r border-b border-dashed">
       {/* Terminal Section (75%) */}
       <div className="cols-start-1 h-full overflow-y-auto">
-          <div className="h-full p-4 font-mono text-xs">
-            <div className="space-y-1">
-              {output.map((line, i) => (
-                <pre key={i} className="whitespace-pre-wrap text-xs">{line}</pre>
-              ))}
-            </div>
-            <div className="flex items-center gap-2 mt-2">
-              <span>{`${currentFolder.filename}`} $</span>
-              <input
-                type="text"
-                value={command}
-                onChange={(e) => setCommand(e.target.value)}
-                onKeyDown={handleCommand}
-                className="flex-1 bg-transparent outline-none"
-                spellCheck={false}
-                autoFocus
-                onFocus={handleFocus}
-                ref={inputElementRef}
-              />
-            </div>
-            <div ref={terminalEndRef} />
+        <div className="h-full p-4 font-mono text-xs">
+          <div className="space-y-1">
+            {output.map((line, i) => (
+              <pre key={i} className="whitespace-pre-wrap text-xs">{line}</pre>
+            ))}
           </div>
+          <div className="flex items-center gap-2 mt-2">
+            <span>{`${currentFolder.filename}`} $</span>
+            <input
+              type="text"
+              value={command}
+              onChange={(e) => setCommand(e.target.value)}
+              onKeyDown={handleCommand}
+              className="flex-1 bg-transparent outline-none"
+              spellCheck={false}
+              autoFocus
+              onFocus={handleFocus}
+              ref={inputElementRef}
+            />
+          </div>
+          <div ref={terminalEndRef} />
+          <pre>{sublineText}</pre>
+        </div>
       </div>
 
       {/* Help Section (25%) */}
