@@ -48,6 +48,8 @@ const commands: string[] = [
   "linkedin",
   "clear",
   "help",
+  "cd",
+  "cat",
   ...Array.from(socials)
 ]
 
@@ -148,62 +150,38 @@ export default function Terminal() {
         return;
       }
 
-      // const cmd: string = command.toLowerCase();
-      // const cmd_split: string[] = cmd.split(" ");
-      // // how do i split "ls " vs "ls"
+      const input: string[] = command.toLowerCase().split(" ");
 
-      // // trim down cmd_split
-      // // const trimmedCmdSplit = cmd_split.filter(part => part !== "");
-      // const len: number = cmd_split.length;
-      // const fileCmd: Set<string> = new Set(['ls', 'open']);
+      // -- system commands -- 
+      if (input.length === 1) {
+        const cmd = input[0];
 
+        let stringMatchScore = -1;
+        let stringMatchIndex = -1;
+        for (let i = 0; i < commands.length; i++) {
+          let j = 0;
+          let tempScore = 0;
 
-      // // -- system commands -- 
-      // if (len === 1) {
-      //   let stringMatchScore = -1;
-      //   let stringMatchIndex = -1;
-      //   for (let i = 0; i < commands.length; i++) {
-      //     let j = 0;
-      //     let tempScore = 0;
+          while (j < cmd.length && j < commands[i].length) {
+            if (commands[i][j] === cmd[j]) {
+              tempScore += 1;
+              j += 1;
+            } else {
+              break;
+            }
+          }
 
-      //     while (j < commands[i].length) {
-      //       if (commands[i][j] === cmd[j]) {
-      //         tempScore += 1;
-      //         j += 1;
-      //       } else {
-      //         break;
-      //       }
-      //     }
-
-      //     if (tempScore > stringMatchScore) {
-      //       stringMatchScore = tempScore;
-      //       stringMatchIndex = i;
-      //     }
-      //   }
-
-      //   setCommand(commands[stringMatchIndex]);
-      // }
-      // // -- ls  --
-      // // ls <project>
-      // // ls ____ <project>
-      // // open <project>
-      // // open ____ <project>
-      // else if (
-      //   ((len === 2 && fileCmd.has(cmd_split[0])) || (len >= 2 && cmd_split[0] === 'ls')) &&
-      //   (cmd_split[len - 1] === "" || projects.some(proj => proj.name === cmd_split[len - 1]))
-      // ) {
-      //   if (cmd_split[0] === 'ls') {
-      //     setCommand(cmd_split.slice(0, len - 1).join(" ") + " " + projects[fileIndex].name);
-      //     setFileIndex((fileIndex + 1) % projects.length);
-      //   }
-      // }
-      // // if (len > 0) {
-      // //   const file = cmd.split(" ");
-      // //   console.log(file)
-      // //   if (!file) {
-      // //     return;
-      // //   }
-      // // }
+          if (j >= cmd.length && tempScore > stringMatchScore) {
+            stringMatchScore = tempScore;
+            stringMatchIndex = i;
+          }
+        }
+        
+        if (stringMatchIndex !== -1) {
+          setCommand(commands[stringMatchIndex]);
+        }
+      }
+      
     }
   }
 
