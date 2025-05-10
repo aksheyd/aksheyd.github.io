@@ -57,7 +57,7 @@ export default function Nav() {
                 </a>
             </Button>
             <Button variant="link">
-                <a href="https://aksheyd.substack.com" target="">
+                <a href="https://aksheyd.substack.com" target="_blank">
                     <span className="font-mono text-sm">
                         Substack
                     </span>

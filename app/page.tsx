@@ -42,11 +42,28 @@ export default function Page() {
           <Button
           variant="link"
           size="icon"
+          className="mb-6 text-sm"
           >
           <Link 
              href="/terminal" 
            >
              launch terminal
+           </Link>
+           </Button>
+        </div>
+
+        <div>
+          <h2 className="text-xl font-medium mb-2 font-serif">blog</h2>
+          <Button
+          variant="link"
+          size="icon"
+          className="mb-6 text-sm"
+          >
+          <Link 
+             href="https://aksheyd.substack.com" 
+             target="_blank"
+           >
+             open substack
            </Link>
            </Button>
         </div>
