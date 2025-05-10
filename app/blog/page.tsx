@@ -4,5 +4,4 @@ export default function Blog() {
             <p>Coming soon.</p>
         </div>
     );
-
 }
