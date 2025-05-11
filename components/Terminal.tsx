@@ -7,10 +7,7 @@ import socialAccounts from "@/lib/Socials";
 import { perm_types } from "@/lib/Utils";
 import { useRef, useState, useEffect } from "react";
 
-
-// TODO: ADD TAB Auto complete????
-// TODO: convert folder and socials into folder structure?
-
+// Create file system for the terminal
 const root = new FileNode("root", undefined, undefined);
 const projFolder = new FileNode("projects", root, undefined);
 const videoGamesFolder = new FileNode("video-games", projFolder, undefined);
