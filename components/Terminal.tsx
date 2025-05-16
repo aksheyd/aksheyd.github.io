@@ -378,11 +378,7 @@ export default function Terminal() {
             <h3 className="text-md font-semibold mb-1">Extras</h3>
             <p className="text-xs">Type <code>help</code> for all available commands</p>
             <p className="text-xs">Type <code>clear</code> to reset the screen</p>
-          </div>
-
-          <div>
-            <h3 className="text-md font-semibold mb-1">Coming Soon</h3>
-            <p className="text-xs">Tab auto-complete</p>
+            <p className="text-xs">Use <code>TAB</code> to auto-complete commands</p>
           </div>
         </div>
       </div>
