@@ -1,8 +1,7 @@
-import type { NextConfig } from 'next';
+import type { NextConfig } from "next";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-
   output: "export",
   basePath: "",
   images: {
@@ -11,4 +10,3 @@ const nextConfig = {
 };
 
 export default nextConfig;
-
