@@ -1,14 +1,13 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
-
 export const perm_types: string[] = [
-  '-r--r--r--',
-  'drwxr-xr-x',
-  '-rw-r--r--',
-  'drwxr-xr-x@'
-] 
+  "-r--r--r--",
+  "drwxr-xr-x",
+  "-rw-r--r--",
+  "drwxr-xr-x@",
+];
