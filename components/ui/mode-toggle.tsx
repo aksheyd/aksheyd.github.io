@@ -1,20 +1,20 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Moon, Sun } from "lucide-react"
-import { useTheme } from "next-themes"
-import { Button } from "@/components/ui/button"
+import * as React from "react";
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
+import { Button } from "@/components/ui/button";
 
 export function ModeToggle() {
-  const { theme, setTheme } = useTheme()
+  const { theme, setTheme } = useTheme();
 
   function toggleTheme(currentTheme: string | undefined) {
     if (!currentTheme) {
       console.error("No theme set!");
-      return
+      return;
     }
 
-    setTheme(currentTheme === "dark" ? "light" : "dark")
+    setTheme(currentTheme === "dark" ? "light" : "dark");
   }
 
   return (
@@ -29,5 +29,5 @@ export function ModeToggle() {
       <Moon className="h-5 w-5 absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
       <span className="sr-only">Toggle theme</span>
     </Button>
-  )
+  );
 }
