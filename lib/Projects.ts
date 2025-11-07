@@ -14,7 +14,6 @@ const projects: Project[] = [
     name: "whats-up",
     desc: "WhatsUp is a web application that makes local ordinances and laws accessible and interactive for community members. Created as part of the Data Driven Hackathon at the University of Michigan, Ann Arbor on 3/22/25. Features: Django backend deployed on Fly.io with LiteFS replication, Selenium/BeautifulSoup4 scraping pipeline, and an LLM-powered interaction system.",
     date: "March 2025",
-    link: "https://whatsup-crimson-water-2982.fly.dev/",
     repo: "https://github.com/aksheyd/whatsup",
     tech: ["Django", "Python", "SQLite", "Fly.io", "Selenium", "BeautifulSoup"],
   },
