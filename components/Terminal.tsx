@@ -32,35 +32,35 @@ contribFolder.children.push(openSourceFolder);
 
 // Projects organization
 webDevFolder.children.push(
-  new FileNode(projects[0].name, webDevFolder, projects[0]),
+  new FileNode(projects[0].name, webDevFolder, projects[0])
 ); // whats-up
 webDevFolder.children.push(
-  new FileNode(projects[7].name, webDevFolder, projects[7]),
+  new FileNode(projects[7].name, webDevFolder, projects[7])
 ); // personal-portfolio
 
 videoGamesFolder.children.push(
-  new FileNode(projects[3].name, videoGamesFolder, projects[3]),
+  new FileNode(projects[3].name, videoGamesFolder, projects[3])
 ); // duelers-providence
 videoGamesFolder.children.push(
-  new FileNode(projects[4].name, videoGamesFolder, projects[4]),
+  new FileNode(projects[4].name, videoGamesFolder, projects[4])
 ); // destroy-the-wormhole
 videoGamesFolder.children.push(
-  new FileNode(projects[5].name, videoGamesFolder, projects[5]),
+  new FileNode(projects[5].name, videoGamesFolder, projects[5])
 ); // legend-of-zelda
 
 aiFolder.children.push(new FileNode(projects[2].name, aiFolder, projects[2])); // nba-mlp
 aiFolder.children.push(new FileNode(projects[6].name, aiFolder, projects[6])); // gemini-ai-asl-translator
 
 researchFolder.children.push(
-  new FileNode(projects[1].name, researchFolder, projects[1]),
+  new FileNode(projects[1].name, researchFolder, projects[1])
 ); // deep-ocean-research
 
 // Contributions
 openSourceFolder.children.push(
-  new FileNode(contributions[0].project, openSourceFolder, contributions[0]),
+  new FileNode(contributions[0].project, openSourceFolder, contributions[0])
 );
 openSourceFolder.children.push(
-  new FileNode(contributions[1].project, openSourceFolder, contributions[1]),
+  new FileNode(contributions[1].project, openSourceFolder, contributions[1])
 );
 
 // populate set with all social commands
@@ -331,7 +331,7 @@ export default function Terminal() {
     // --- ls commands ---
     if (cmd === "ls") {
       newOutput.push(
-        currentFolder.children.map((child) => child.filename).join(" "),
+        currentFolder.children.map((child) => child.filename).join(" ")
       );
     } else if (cmd.startsWith("ls ")) {
       const subcommand = cmd.split(" ")[1].trim();
@@ -351,19 +351,19 @@ export default function Terminal() {
           const size: number = Math.floor(Math.random() * 600);
 
           newOutput.push(
-            `${permission}  ${type} aksheydeokule  staff  ${size} aksheydeokule staff ${project.filename}`,
+            `${permission}  ${type} aksheydeokule  staff  ${size} aksheydeokule staff ${project.filename}`
           );
         });
       } else {
         const files = currentFolder.children.filter(
-          (c) => c.data === undefined,
+          (c) => c.data === undefined
         );
 
         const folderName = subcommand;
         const project = files.find((p) => p.filename === folderName);
         if (project) {
           newOutput.push(
-            project.children.map((child) => child.filename).join(" "),
+            project.children.map((child) => child.filename).join(" ")
           );
         } else {
           newOutput.push(`folder not found: ${folderName}`);
@@ -382,7 +382,7 @@ export default function Terminal() {
           setCurrentFolder(currentFolder.parent);
         } else {
           console.error(
-            `filenode ${currentFolder.filename} has no parent but is not root.`,
+            `filenode ${currentFolder.filename} has no parent but is not root.`
           );
         }
       }
@@ -390,7 +390,7 @@ export default function Terminal() {
       const reducedCmd = cmd.split(" ").filter(Boolean).join(" ");
       if (!(reducedCmd === "cd ." || reducedCmd === "cd ..")) {
         const folders = currentFolder.children.filter(
-          (c) => c.data === undefined,
+          (c) => c.data === undefined
         );
         console.log(folders);
 
@@ -436,14 +436,14 @@ export default function Terminal() {
       const subcommand = cmd.split(" ")[1].trim();
 
       const files = currentFolder.children.filter(
-        (c) => c.data !== undefined && c.data !== null,
+        (c) => c.data !== undefined && c.data !== null
       );
 
       const fileName = subcommand;
       const file = files.find(
         (f) =>
           (f.data as Project).name === fileName ||
-          (f.data as Contribution).project === fileName,
+          (f.data as Contribution).project === fileName
       );
 
       if (file) {
@@ -458,7 +458,7 @@ export default function Terminal() {
             `date: ${project.date}`,
             `tech: ${project.tech.join(", ")}`,
             `url: ${project.link}`,
-            ...(project.repo ? [`repo: ${project.repo}`] : []),
+            ...(project.repo ? [`repo: ${project.repo}`] : [])
           );
         } else {
           // It's a Contribution
@@ -471,7 +471,7 @@ export default function Terminal() {
             `status: ${contrib.status}`,
             `date: ${contrib.date}`,
             `tech: ${contrib.tech.join(", ")}`,
-            `link: ${contrib.link}`,
+            `link: ${contrib.link}`
           );
         }
       } else {
@@ -499,7 +499,7 @@ export default function Terminal() {
 
       // Try to find as contribution
       const contribToOpen = contributions.find(
-        (contrib) => contrib.project === subcommand,
+        (contrib) => contrib.project === subcommand
       );
       if (contribToOpen) {
         window.open(contribToOpen.link, "_blank");
