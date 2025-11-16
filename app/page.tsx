@@ -101,7 +101,7 @@ export default function HomePage() {
               </ul>
             </div>
 
-            <div>
+            <div className="mb-10">
               <h2 className="text-xl font-medium mb-2 font-serif">blog</h2>
               <Button variant="link" size="icon" className="mb-6 text-sm">
                 <Link className="ml-4 flex items-center gap-2" href="/blog">
