@@ -1,8 +1,8 @@
 import { getPostBySlug, getAllPostSlugs } from "@/lib/BlogPosts";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import { Arrow } from "@/components/ui/arrow";
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
@@ -46,7 +46,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           href="/blog"
           className="hover:underline decoration-dotted underline-offset-2 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <Arrow direction="left" />
           Back to blog
         </Link>
 
