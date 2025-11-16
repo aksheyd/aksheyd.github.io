@@ -103,12 +103,8 @@ export default function HomePage() {
             <div>
               <h2 className="text-xl font-medium mb-2 font-serif">blog</h2>
               <Button variant="link" size="icon" className="mb-6 text-sm">
-                <Link
-                  className="ml-4 flex items-center gap-2"
-                  href="https://aksheyd.substack.com"
-                  target="_blank"
-                >
-                  open substack <ArrowRight className="w-4 h-4" />
+                <Link className="ml-4 flex items-center gap-2" href="/blog">
+                  see recent posts <ArrowRight className="w-4 h-4" />
                 </Link>
               </Button>
             </div>
