@@ -60,7 +60,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 day: "numeric",
               })}
             </time>
-            <p className="text-xs text-muted-foreground">{post.tldr}</p>
+            <p className="text-sm text-muted-foreground">{post.tldr}</p>
           </div>
         </header>
 
