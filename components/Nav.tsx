@@ -22,7 +22,6 @@ export default function Nav() {
     setName(titles[nextIndex]);
   };
 
-  // TODO: add a blog page
   return (
     <div className="relative flex h-14 items-center gap-2 px-4 py-2 border border-dashed bg-muted/50">
       <TerminalIcon className="absolute left-4 h-4 w-4" />
@@ -39,8 +38,8 @@ export default function Nav() {
           </a>
         </Button>
         <Button variant="link">
-          <a href="https://aksheyd.substack.com" target="_blank">
-            <span className="font-mono text-sm">Substack</span>
+          <a href="/blog" target="">
+            <span className="font-mono text-sm">Blog</span>
           </a>
         </Button>
       </div>

@@ -4,7 +4,8 @@ import contributions from "@/lib/Contributions";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import RecentPosts from "@/components/RecentPosts";
-import { ArrowRight, Heart } from "lucide-react";
+import { Heart } from "lucide-react";
+import { Arrow } from "@/components/ui/arrow";
 
 export default function HomePage() {
   return (
@@ -52,7 +53,7 @@ export default function HomePage() {
               <h2 className="text-xl font-medium mb-2 font-serif">projects</h2>
               <Button variant="link" size="icon" className="mb-4 text-sm ">
                 <Link className="ml-4 flex items-center gap-2" href="/terminal">
-                  launch terminal <ArrowRight className="w-4 h-4" />
+                  launch terminal <Arrow direction="right" />
                 </Link>
               </Button>
               <div className="mb-6">
@@ -103,12 +104,8 @@ export default function HomePage() {
             <div>
               <h2 className="text-xl font-medium mb-2 font-serif">blog</h2>
               <Button variant="link" size="icon" className="mb-6 text-sm">
-                <Link
-                  className="ml-4 flex items-center gap-2"
-                  href="https://aksheyd.substack.com"
-                  target="_blank"
-                >
-                  open substack <ArrowRight className="w-4 h-4" />
+                <Link className="ml-4 flex items-center gap-2" href="/blog">
+                  see recent posts <Arrow direction="right" />
                 </Link>
               </Button>
             </div>
