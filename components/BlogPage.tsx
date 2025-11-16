@@ -49,7 +49,7 @@ export default function BlogPage() {
                         day: "numeric",
                       })}
                     </td>
-                    <td className="py-4 pr-8 text-xs truncate max-w-40">
+                    <td className="py-4 pr-8 text-sm truncate max-w-40">
                       {post.tldr}
                     </td>
                   </tr>
