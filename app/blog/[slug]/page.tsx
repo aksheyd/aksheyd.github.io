@@ -52,7 +52,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
         <header className="mb-8">
           <h1 className="text-4xl font-bold font-serif mb-3">{post.title}</h1>
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+          <div className="space-y-2 text-sm text-muted-foreground">
             <time dateTime={post.date}>
               {new Date(post.date).toLocaleDateString("en-US", {
                 year: "numeric",
