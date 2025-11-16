@@ -1,7 +1,7 @@
 import { getAllPosts } from "@/lib/BlogPosts";
-import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useMemo } from "react";
+import { Arrow } from "@/components/ui/arrow";
 
 export default function RecentPosts() {
   const posts = useMemo(() => getAllPosts(), []);
@@ -45,7 +45,7 @@ export default function RecentPosts() {
               href="/blog"
               className="hover:underline font-semibold text-base font-serif block"
             >
-              see all posts <ArrowRight className="w-4 h-4 text-brown-800" />
+              see all posts <Arrow direction="right" />
             </Link>
           </li>
         )}
