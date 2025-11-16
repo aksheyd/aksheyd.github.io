@@ -131,6 +131,128 @@ export default function Terminal() {
     setSublineText("");
   };
 
+  // Helper functions for autocomplete
+  const getAvailableFlags = (cmd: string): string[] => {
+    if (cmd === "ls") {
+      return ["-a", "-l"];
+    }
+    return [];
+  };
+
+  const getFolderNames = (folder: FileNode): string[] => {
+    return folder.children
+      .filter((child) => child.data === undefined)
+      .map((child) => child.filename);
+  };
+
+  const getFileNames = (folder: FileNode): string[] => {
+    return folder.children
+      .filter((child) => child.data !== undefined)
+      .map((child) => child.filename);
+  };
+
+  const autocompleteForCommand = (
+    cmd: string,
+    args: string[],
+    folder: FileNode,
+    currentInput: string
+  ): { completion: string | null; suggestions: string[] } => {
+    // No arguments - just autocomplete the command itself
+    if (args.length === 0) {
+      const candidates = commands.filter((c) => c.startsWith(cmd));
+      if (candidates.length === 1) {
+        return { completion: candidates[0], suggestions: [] };
+      } else if (candidates.length > 1) {
+        return { completion: null, suggestions: candidates };
+      }
+      return { completion: null, suggestions: [] };
+    }
+
+    const lastArg = args[args.length - 1];
+
+    // ls command - autocomplete flags or folder names
+    if (cmd === "ls") {
+      // If last arg starts with -, autocomplete flags
+      if (lastArg.startsWith("-")) {
+        const flags = getAvailableFlags("ls");
+        const candidates = flags.filter((f) => f.startsWith(lastArg));
+        if (candidates.length === 1) {
+          const baseCommand = [cmd, ...args.slice(0, -1)].join(" ");
+          return {
+            completion: `${baseCommand} ${candidates[0]}`.trim(),
+            suggestions: [],
+          };
+        } else if (candidates.length > 1) {
+          return { completion: null, suggestions: candidates };
+        }
+      }
+      // Otherwise autocomplete folder names
+      const folders = getFolderNames(folder);
+      const candidates = folders.filter((f) => f.startsWith(lastArg));
+      if (candidates.length === 1) {
+        const baseCommand = [cmd, ...args.slice(0, -1)].join(" ");
+        return {
+          completion: `${baseCommand} ${candidates[0]}`.trim(),
+          suggestions: [],
+        };
+      } else if (candidates.length > 1) {
+        return { completion: null, suggestions: candidates };
+      }
+    }
+
+    // cd command - only autocomplete folders
+    else if (cmd === "cd") {
+      // Special cases
+      if (lastArg === "." || lastArg === "..") {
+        return { completion: null, suggestions: [] };
+      }
+
+      const folders = getFolderNames(folder);
+      const candidates = folders.filter((f) => f.startsWith(lastArg));
+      if (candidates.length === 1) {
+        const baseCommand = [cmd, ...args.slice(0, -1)].join(" ");
+        return {
+          completion: `${baseCommand} ${candidates[0]}`.trim(),
+          suggestions: [],
+        };
+      } else if (candidates.length > 1) {
+        return { completion: null, suggestions: candidates };
+      }
+    }
+
+    // cat and open commands - only autocomplete files
+    else if (cmd === "cat" || cmd === "open") {
+      const files = getFileNames(folder);
+      const candidates = files.filter((f) => f.startsWith(lastArg));
+      if (candidates.length === 1) {
+        const baseCommand = [cmd, ...args.slice(0, -1)].join(" ");
+        return {
+          completion: `${baseCommand} ${candidates[0]}`.trim(),
+          suggestions: [],
+        };
+      } else if (candidates.length > 1) {
+        return { completion: null, suggestions: candidates };
+      }
+    }
+
+    // For other commands, autocomplete from all children
+    else {
+      const allNames = folder.children.map((child) => child.filename);
+      const candidates = allNames.filter((name) => name.startsWith(lastArg));
+      if (candidates.length === 1) {
+        const baseCommand = [cmd, ...args.slice(0, -1)].join(" ");
+        return {
+          completion: `${baseCommand} ${candidates[0]}`.trim(),
+          suggestions: [],
+        };
+      } else if (candidates.length > 1) {
+        return { completion: null, suggestions: candidates };
+      }
+    }
+
+    return { completion: null, suggestions: [] };
+  };
+
   // for key presses (not commands)
   const handleCommand = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -188,34 +310,16 @@ export default function Terminal() {
         return;
       }
 
-      const input: string[] = command.toLowerCase().split(" ");
+      const input = command.toLowerCase().trim().split(/\s+/);
+      const cmd = input[0];
+      const args = input.slice(1);
 
-      // -- system commands --
-      if (input.length === 1) {
-        const candidates = commands.filter((c) => c.startsWith(input[0]));
-        if (candidates.length === 1) {
-          // Autocomplete to closest match (ordering of commands matters)
-          setCommandAndClearSubline(`${candidates[0]}`);
-        } else if (candidates.length > 1) {
-          setSublineText(candidates.join("\n"));
-        }
-      }
+      const result = autocompleteForCommand(cmd, args, currentFolder, command);
 
-      // -- file display --
-      else if (input.length >= 2) {
-        // The last word is what we're trying to autocomplete
-        const lastWord = input[input.length - 1];
-        const baseCommand = input.slice(0, -1).join(" ");
-
-        const candidates = currentFolder.children
-          .map((child) => child.filename)
-          .filter((filename) => filename.startsWith(lastWord));
-
-        if (candidates.length === 1) {
-          setCommandAndClearSubline(`${baseCommand} ${candidates[0]}`);
-        } else if (candidates.length > 1) {
-          setSublineText(candidates.join("\n"));
-        }
+      if (result.completion) {
+        setCommandAndClearSubline(result.completion);
+      } else if (result.suggestions.length > 0) {
+        setSublineText(result.suggestions.join("\n"));
       }
     }
   };
