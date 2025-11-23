@@ -24,6 +24,12 @@ const socialAccounts: Account[] = [
     pretty: "LinkedIn",
     spacing: "          ",
   },
+  {
+    name: "huggingface",
+    website: "https://huggingface.co/aksheyd",
+    pretty: "HuggingFace",
+    spacing: "            ",
+  },
 ];
 
 export default socialAccounts;

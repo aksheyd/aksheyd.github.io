@@ -17,7 +17,14 @@ const projects: Project[] = [
     repo: "https://github.com/aksheyd/whatsup",
     tech: ["Django", "Python", "SQLite", "Fly.io", "Selenium", "BeautifulSoup"],
   },
-
+  {
+    name: "easy-train",
+    desc: "Learning about training LLMs with SFT and RL (Tinker, Modal, WanDB, vLLM, etc).",
+    date: "November 2025",
+    tech: ["Tinker", "Modal", "WandB", "vLLM"],
+    repo: "https://github.com/aksheyd/easy-train",
+    featured: true,
+  },
   {
     name: "duelers-providence",
     desc: "Collaborated with a 5-person student team in Unity using C#. Focused on level design, environment details, lighting, lore, and trailer creation. Click the link for more details and downloads.",
@@ -40,7 +47,6 @@ const projects: Project[] = [
     date: "2024",
     repo: "https://github.com/aksheyd/deep-ocean-research",
     tech: ["Python", "React", "CrewAI", "OpenAlex", "GraphML"],
-    featured: true,
   },
   {
     name: "destroy-the-wormhole",
