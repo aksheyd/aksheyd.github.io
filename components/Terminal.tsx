@@ -5,6 +5,8 @@ import { Project } from "@/lib/Projects";
 import projects from "@/lib/Projects";
 import { Contribution } from "@/lib/Contributions";
 import contributions from "@/lib/Contributions";
+import { Model } from "@/lib/Models";
+import models from "@/lib/Models";
 import socialAccounts from "@/lib/Socials";
 import { perm_types } from "@/lib/Utils";
 import { useRef, useState, useEffect } from "react";
@@ -13,6 +15,7 @@ import { useRef, useState, useEffect } from "react";
 const root = new FileNode("root", undefined, undefined);
 const projFolder = new FileNode("projects", root, undefined);
 const contribFolder = new FileNode("contributions", root, undefined);
+const fineTunesFolder = new FileNode("fine-tunes", root, undefined);
 
 const videoGamesFolder = new FileNode("video-games", projFolder, undefined);
 const webDevFolder = new FileNode("web-dev", projFolder, undefined);
@@ -22,6 +25,7 @@ const openSourceFolder = new FileNode("open-source", contribFolder, undefined);
 
 root.children.push(projFolder);
 root.children.push(contribFolder);
+root.children.push(fineTunesFolder);
 
 projFolder.children.push(videoGamesFolder);
 projFolder.children.push(webDevFolder);
@@ -62,6 +66,13 @@ openSourceFolder.children.push(
 openSourceFolder.children.push(
   new FileNode(contributions[1].project, openSourceFolder, contributions[1])
 );
+
+// Models / Fine-Tunes
+models.forEach((model) => {
+  fineTunesFolder.children.push(
+    new FileNode(model.name, fineTunesFolder, model)
+  );
+});
 
 // populate set with all social commands
 let socials: Set<string> = new Set<string>();
@@ -440,16 +451,20 @@ export default function Terminal() {
       );
 
       const fileName = subcommand;
-      const file = files.find(
-        (f) =>
-          (f.data as Project).name === fileName ||
-          (f.data as Contribution).project === fileName
-      );
+      const file = files.find((f) => {
+        const data = f.data;
+        if (data && "name" in data) {
+          return (data as Project | Model).name === fileName;
+        } else if (data && "project" in data) {
+          return (data as Contribution).project === fileName;
+        }
+        return false;
+      });
 
       if (file) {
         const data = file.data;
-        // Check if it's a project or contribution
-        if (data && "name" in data) {
+        // Check if it's a project, contribution, or model
+        if (data && "name" in data && "tech" in data) {
           // It's a Project
           const project = data as Project;
           newOutput.push(
@@ -459,6 +474,15 @@ export default function Terminal() {
             `tech: ${project.tech.join(", ")}`,
             `url: ${project.link}`,
             ...(project.repo ? [`repo: ${project.repo}`] : [])
+          );
+        } else if (data && "name" in data && "baseModel" in data) {
+          // It's a Model
+          const model = data as Model;
+          newOutput.push(
+            `name: ${model.name}`,
+            `desc: ${model.desc}`,
+            `base model: ${model.baseModel}`,
+            `link: ${model.link}`
           );
         } else {
           // It's a Contribution
@@ -493,6 +517,14 @@ export default function Terminal() {
         } else if (projectToOpen.repo) {
           window.open(projectToOpen.repo, "_blank");
         }
+        setOutput(newOutput);
+        return;
+      }
+
+      // Try to find as model
+      const modelToOpen = models.find((model) => model.name === subcommand);
+      if (modelToOpen) {
+        window.open(modelToOpen.link, "_blank");
         setOutput(newOutput);
         return;
       }
