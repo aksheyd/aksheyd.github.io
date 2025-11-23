@@ -1,6 +1,7 @@
 import socialAccounts from "@/lib/Socials";
 import projects from "@/lib/Projects";
 import contributions from "@/lib/Contributions";
+import models from "@/lib/Models";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import RecentPosts from "@/components/RecentPosts";
@@ -58,7 +59,7 @@ export default function HomePage() {
               </Button>
               <div className="mb-6">
                 <h3 className="text-base font-medium mb-1 font-serif">
-                  my favorites
+                  my favorite projects
                 </h3>
                 <ul className="text-sm">
                   {projects
@@ -72,6 +73,27 @@ export default function HomePage() {
                           className="text-xs underline decoration-dotted underline-offset-2 hover:decoration-solid"
                         >
                           {project.name}
+                        </a>
+                      </li>
+                    ))}
+                </ul>
+              </div>
+              <div className="mb-6">
+                <h3 className="text-base font-medium mb-1 font-serif">
+                  my favorite fine-tunes
+                </h3>
+                <ul className="text-sm">
+                  {models
+                    .filter((model) => model.featured)
+                    .map((model) => (
+                      <li key={model.name}>
+                        <a
+                          href={model.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs underline decoration-dotted underline-offset-2 hover:decoration-solid"
+                        >
+                          {model.name}
                         </a>
                       </li>
                     ))}
