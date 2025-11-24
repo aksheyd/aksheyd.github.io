@@ -9,6 +9,14 @@ interface Model {
 
 const models: Model[] = [
   {
+    name: "qwen3-32b-finetome-sft",
+    desc: "Qwen3-32B-Finetome trained on Finetome dataset.",
+    baseModel: "Qwen/Qwen3-32B-Finetome",
+    date: "November 2025",
+    link: "https://huggingface.co/aksheyd/qwen3-32b-finetome-sft",
+    featured: true,
+  },
+  {
     name: "llama-3.1-8b-instruct-no-robots",
     desc: "Llama-3.1-8B-Instruct trained on No Robots dataset.",
     baseModel: "meta-llama/Meta-Llama-3.1-8B-Instruct",
