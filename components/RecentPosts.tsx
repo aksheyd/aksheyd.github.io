@@ -8,9 +8,9 @@ export default function RecentPosts() {
   const sortedPosts = useMemo(
     () =>
       posts.sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
       ),
-    [posts]
+    [posts],
   );
 
   if (sortedPosts.length === 0) {
