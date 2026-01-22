@@ -7,9 +7,9 @@ export default function BlogPage() {
   const sortedPosts = useMemo(
     () =>
       posts.sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
       ),
-    [posts]
+    [posts],
   );
   return (
     <div className="min-h-[calc(100vh-3.5rem)] w-full flex justify-center border-l border-r border-b border-dashed">
