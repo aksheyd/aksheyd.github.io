@@ -1196,7 +1196,6 @@ function createUnityInstance(t, n, d) {
                 ")",
             );
             n < s;
-
           ) {
             var d = r(),
               c = r(),
