@@ -8,616 +8,864 @@ import contributions from "@/lib/Contributions";
 import { Model } from "@/lib/Models";
 import models from "@/lib/Models";
 import socialAccounts from "@/lib/Socials";
-import { perm_types } from "@/lib/Utils";
-import { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, type ReactNode } from "react";
 
-// Create file system for the terminal
+// ── File system construction ─────────────────────────────────────────────
+
 const root = new FileNode("root", undefined, undefined);
 const projFolder = new FileNode("projects", root, undefined);
 const contribFolder = new FileNode("contributions", root, undefined);
 const fineTunesFolder = new FileNode("fine-tunes", root, undefined);
+root.children.push(projFolder, contribFolder, fineTunesFolder);
 
 const videoGamesFolder = new FileNode("video-games", projFolder, undefined);
 const webDevFolder = new FileNode("web-dev", projFolder, undefined);
 const aiFolder = new FileNode("ai", projFolder, undefined);
 const researchFolder = new FileNode("research", projFolder, undefined);
+projFolder.children.push(
+  videoGamesFolder,
+  webDevFolder,
+  aiFolder,
+  researchFolder,
+);
+
 const openSourceFolder = new FileNode("open-source", contribFolder, undefined);
-
-root.children.push(projFolder);
-root.children.push(contribFolder);
-root.children.push(fineTunesFolder);
-
-projFolder.children.push(videoGamesFolder);
-projFolder.children.push(webDevFolder);
-projFolder.children.push(aiFolder);
-projFolder.children.push(researchFolder);
-
 contribFolder.children.push(openSourceFolder);
 
-// Projects organization
-webDevFolder.children.push(
-  new FileNode(projects[0].name, webDevFolder, projects[0]),
-); // whats-up
-webDevFolder.children.push(
-  new FileNode(projects[7].name, webDevFolder, projects[7]),
-); // personal-portfolio
+// Map each project to its correct category folder by name
+const projectFolders: Record<string, FileNode> = {
+  "whats-up": webDevFolder,
+  "personal-portfolio": webDevFolder,
+  "duelers-providence": videoGamesFolder,
+  "destroy-the-wormhole": videoGamesFolder,
+  "legend-of-zelda": videoGamesFolder,
+  "easy-train": aiFolder,
+  "nba-mlp": aiFolder,
+  "gemini-ai-asl-translator": aiFolder,
+  "deep-ocean-research": researchFolder,
+};
 
-videoGamesFolder.children.push(
-  new FileNode(projects[2].name, videoGamesFolder, projects[3]),
-); // duelers-providence
-videoGamesFolder.children.push(
-  new FileNode(projects[5].name, videoGamesFolder, projects[4]),
-); // destroy-the-wormhole
-videoGamesFolder.children.push(
-  new FileNode(projects[6].name, videoGamesFolder, projects[5]),
-); // legend-of-zelda
-
-aiFolder.children.push(new FileNode(projects[4].name, aiFolder, projects[3])); // nba-mlp
-aiFolder.children.push(new FileNode(projects[6].name, aiFolder, projects[6])); // gemini-ai-asl-translator
-
-researchFolder.children.push(
-  new FileNode(projects[1].name, researchFolder, projects[1]),
-); // deep-ocean-research
-
-// Contributions
-openSourceFolder.children.push(
-  new FileNode(contributions[0].project, openSourceFolder, contributions[0]),
-);
-openSourceFolder.children.push(
-  new FileNode(contributions[1].project, openSourceFolder, contributions[1]),
-);
-
-// Models / Fine-Tunes
-models.forEach((model) => {
-  fineTunesFolder.children.push(
-    new FileNode(model.name, fineTunesFolder, model),
-  );
+projects.forEach((p) => {
+  const folder = projectFolders[p.name];
+  if (folder) folder.children.push(new FileNode(p.name, folder, p));
 });
 
-// populate set with all social commands
-let socials: Set<string> = new Set<string>();
-let socialsHelp: string = "";
-socialAccounts.forEach((acct) => {
-  socials.add(acct.name);
-  socialsHelp += `  ${acct.name}${acct.spacing}Open my ${acct.pretty} account\n`;
-});
+contributions.forEach((c) =>
+  openSourceFolder.children.push(
+    new FileNode(c.project, openSourceFolder, c),
+  ),
+);
 
-const commands: string[] = [
+models.forEach((m) =>
+  fineTunesFolder.children.push(new FileNode(m.name, fineTunesFolder, m)),
+);
+
+// ── Social lookup ────────────────────────────────────────────────────────
+
+const socialMap = new Map(socialAccounts.map((a) => [a.name, a]));
+
+// ── Constants ────────────────────────────────────────────────────────────
+
+const COMMANDS = [
   "ls",
   "cd",
   "cat",
   "open",
-  // "x",
-  // "github",
-  // "linkedin",
+  "pwd",
+  "whoami",
+  "tree",
   "clear",
   "help",
   "exit",
-  ...Array.from(socials),
+  ...socialAccounts.map((a) => a.name),
 ];
 
-const helpDocString: string = `  Available commands:
-  ------------- 
-  cd [..]           Enter/exit a folder
-  ls [-a] [-l]      List files/folders
+const LS_FLAGS = ["-a", "-l", "-la", "-al"];
 
-  ------------- 
-  cat <project>     Show project details
-  open <project>    Open link to project
+// ── Utilities ────────────────────────────────────────────────────────────
 
-  -------------
-${socialsHelp}
+const isDir = (n: FileNode) => n.data === undefined;
 
-  -------------
-  clear             Clear terminal
-  help              Show this help message
-`;
+const getPath = (node: FileNode): string => {
+  if (!node.parent) return "~";
+  const parts: string[] = [];
+  let cur: FileNode | undefined = node;
+  while (cur?.parent) {
+    parts.unshift(cur.filename);
+    cur = cur.parent;
+  }
+  return "~/" + parts.join("/");
+};
+
+const resolvePath = (from: FileNode, path: string): FileNode | null => {
+  if (path === "~" || path === "/") return root;
+  let node: FileNode | undefined = from;
+  if (path.startsWith("~/")) {
+    node = root;
+    path = path.slice(2);
+  } else if (path.startsWith("/")) {
+    node = root;
+    path = path.slice(1);
+  }
+  for (const part of path.split("/").filter(Boolean)) {
+    if (!node) return null;
+    if (part === ".") continue;
+    if (part === "..") {
+      node = node.parent ?? node;
+      continue;
+    }
+    const child: FileNode | undefined = node.children.find(
+      (c: FileNode) => c.filename === part,
+    );
+    if (!child) return null;
+    node = child;
+  }
+  return node ?? null;
+};
+
+const commonPrefix = (strs: string[]): string => {
+  if (!strs.length) return "";
+  let p = strs[0];
+  for (const s of strs) {
+    while (!s.startsWith(p)) p = p.slice(0, -1);
+  }
+  return p;
+};
+
+const getDate = (n: FileNode): string =>
+  n.data && "date" in n.data ? (n.data as { date: string }).date : "";
+
+// ── Display components (stable module-level references) ──────────────────
+
+const PromptLine = ({ path, cmd }: { path: string; cmd: string }) => (
+  <div className="flex gap-1 flex-wrap">
+    <span className="font-semibold whitespace-nowrap mr-2">
+      {path} $
+    </span>
+    <span className="break-all">{cmd}</span>
+  </div>
+);
+
+const Err = ({ msg }: { msg: string }) => (
+  <span className="text-red-600 dark:text-red-400">{msg}</span>
+);
+
+const DirSpan = ({ name }: { name: string }) => (
+  <span className="text-blue-600 dark:text-blue-400 font-bold">{name}/</span>
+);
+
+const Suggestions = ({ items }: { items: string[] }) => (
+  <div className="flex flex-wrap gap-x-4 gap-y-0.5">
+    {items.map((s) => (
+      <span
+        key={s}
+        className={
+          s.endsWith("/")
+            ? "text-blue-600 dark:text-blue-400 font-bold"
+            : ""
+        }
+      >
+        {s}
+      </span>
+    ))}
+  </div>
+);
+
+const Field = ({ label, value }: { label: string; value: ReactNode }) => (
+  <div className="flex">
+    <span className="text-muted-foreground whitespace-pre shrink-0">
+      {(label + ":").padEnd(10)}
+    </span>
+    <span className="min-w-0">{value}</span>
+  </div>
+);
+
+const Link = ({ url }: { url: string }) => (
+  <a
+    href={url}
+    target={url.startsWith("/") ? "_self" : "_blank"}
+    rel="noopener noreferrer"
+    className="underline text-blue-600 dark:text-blue-400 hover:opacity-80"
+  >
+    {url}
+  </a>
+);
+
+// ── Terminal component ───────────────────────────────────────────────────
 
 export default function Terminal() {
-  const [command, setCommand] = useState<string | undefined>("");
-  const [history, setHistory] = useState<string[]>([]);
-  const [output, setOutput] = useState<string[]>([
+  const [input, setInput] = useState("");
+  const [output, setOutput] = useState<ReactNode[]>([
     "Welcome to my terminal.",
-    "Type 'help' for available commands",
+    <span key="welcome-hint" className="text-muted-foreground">
+      {"Type 'help' for available commands."}
+    </span>,
   ]);
-  const [sublineText, setSublineText] = useState<string>("");
-  const [historyIndex, setHistoryIndex] = useState<number>(-1);
-  const [currentFolder, setCurrentFolder] = useState<FileNode>(root);
+  const [history, setHistory] = useState<string[]>([]);
+  const [histIdx, setHistIdx] = useState(-1);
+  const [cwd, setCwd] = useState(root);
 
-  // fix scrolling behaviour when long text
-  const terminalEndRef = useRef<HTMLDivElement>(null);
-  const inputElementRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const endRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    terminalEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [output]);
 
-  const handleFocus = () => {
-    setTimeout(() => {
-      inputElementRef.current?.scrollIntoView({ block: "nearest" });
-    }, 100);
-  };
+  const promptPath = getPath(cwd);
 
-  const setCommandAndClearSubline = (value: string) => {
-    setCommand(value);
-    setSublineText("");
-  };
+  const append = (...lines: ReactNode[]) =>
+    setOutput((prev) => [...prev, ...lines]);
 
-  // Helper functions for autocomplete
-  const getAvailableFlags = (cmd: string): string[] => {
-    if (cmd === "ls") {
-      return ["-a", "-l"];
-    }
-    return [];
-  };
+  // ── Tab completion ─────────────────────────────────────────────────
 
-  const getFolderNames = (folder: FileNode): string[] => {
-    return folder.children
-      .filter((child) => child.data === undefined)
-      .map((child) => child.filename);
-  };
+  const handleTab = () => {
+    const trimmed = input.trim();
 
-  const getFileNames = (folder: FileNode): string[] => {
-    return folder.children
-      .filter((child) => child.data !== undefined)
-      .map((child) => child.filename);
-  };
-
-  const autocompleteForCommand = (
-    cmd: string,
-    args: string[],
-    folder: FileNode,
-    currentInput: string,
-  ): { completion: string | null; suggestions: string[] } => {
-    // No arguments - just autocomplete the command itself
-    if (args.length === 0) {
-      const candidates = commands.filter((c) => c.startsWith(cmd));
-      if (candidates.length === 1) {
-        return { completion: candidates[0], suggestions: [] };
-      } else if (candidates.length > 1) {
-        return { completion: null, suggestions: candidates };
-      }
-      return { completion: null, suggestions: [] };
+    // Empty input → show all commands
+    if (!trimmed) {
+      append(
+        <PromptLine path={promptPath} cmd="" />,
+        <Suggestions items={COMMANDS} />,
+      );
+      return;
     }
 
-    const lastArg = args[args.length - 1];
+    const spaceIdx = trimmed.indexOf(" ");
 
-    // ls command - autocomplete flags or folder names
-    if (cmd === "ls") {
-      // If last arg starts with -, autocomplete flags
-      if (lastArg.startsWith("-")) {
-        const flags = getAvailableFlags("ls");
-        const candidates = flags.filter((f) => f.startsWith(lastArg));
-        if (candidates.length === 1) {
-          const baseCommand = [cmd, ...args.slice(0, -1)].join(" ");
-          return {
-            completion: `${baseCommand} ${candidates[0]}`.trim(),
-            suggestions: [],
-          };
-        } else if (candidates.length > 1) {
-          return { completion: null, suggestions: candidates };
-        }
-      }
-      // Otherwise autocomplete folder names
-      const folders = getFolderNames(folder);
-      const candidates = folders.filter((f) => f.startsWith(lastArg));
-      if (candidates.length === 1) {
-        const baseCommand = [cmd, ...args.slice(0, -1)].join(" ");
-        return {
-          completion: `${baseCommand} ${candidates[0]}`.trim(),
-          suggestions: [],
-        };
-      } else if (candidates.length > 1) {
-        return { completion: null, suggestions: candidates };
-      }
-    }
-
-    // cd command - only autocomplete folders
-    else if (cmd === "cd") {
-      // Special cases
-      if (lastArg === "." || lastArg === "..") {
-        return { completion: null, suggestions: [] };
-      }
-
-      const folders = getFolderNames(folder);
-      const candidates = folders.filter((f) => f.startsWith(lastArg));
-      if (candidates.length === 1) {
-        const baseCommand = [cmd, ...args.slice(0, -1)].join(" ");
-        return {
-          completion: `${baseCommand} ${candidates[0]}`.trim(),
-          suggestions: [],
-        };
-      } else if (candidates.length > 1) {
-        return { completion: null, suggestions: candidates };
-      }
-    }
-
-    // cat and open commands - only autocomplete files
-    else if (cmd === "cat" || cmd === "open") {
-      const files = getFileNames(folder);
-      const candidates = files.filter((f) => f.startsWith(lastArg));
-      if (candidates.length === 1) {
-        const baseCommand = [cmd, ...args.slice(0, -1)].join(" ");
-        return {
-          completion: `${baseCommand} ${candidates[0]}`.trim(),
-          suggestions: [],
-        };
-      } else if (candidates.length > 1) {
-        return { completion: null, suggestions: candidates };
-      }
-    }
-
-    // For other commands, autocomplete from all children
-    else {
-      const allNames = folder.children.map((child) => child.filename);
-      const candidates = allNames.filter((name) => name.startsWith(lastArg));
-      if (candidates.length === 1) {
-        const baseCommand = [cmd, ...args.slice(0, -1)].join(" ");
-        return {
-          completion: `${baseCommand} ${candidates[0]}`.trim(),
-          suggestions: [],
-        };
-      } else if (candidates.length > 1) {
-        return { completion: null, suggestions: candidates };
-      }
-    }
-
-    return { completion: null, suggestions: [] };
-  };
-
-  // for key presses (not commands)
-  const handleCommand = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      if (!command) {
+    // Completing command name
+    if (spaceIdx === -1) {
+      const matches = COMMANDS.filter((c) => c.startsWith(trimmed));
+      if (matches.length === 0) return;
+      if (matches.length === 1) {
+        setInput(matches[0] + " ");
         return;
       }
-      const cmd = command.trim().toLowerCase();
+      const cp = commonPrefix(matches);
+      if (cp.length > trimmed.length) setInput(cp);
+      append(
+        <PromptLine path={promptPath} cmd={input} />,
+        <Suggestions items={matches} />,
+      );
+      return;
+    }
 
-      if (cmd) {
-        setHistory((prev) => [...prev, cmd]);
-        setHistoryIndex(-1);
-        processCommand(cmd);
+    // Completing argument
+    const cmd = trimmed.slice(0, spaceIdx).toLowerCase();
+    const lastSp = input.lastIndexOf(" ");
+    const partial = input.slice(lastSp + 1);
+    const before = input.slice(0, lastSp + 1);
+
+    // Flag completion for ls
+    if (cmd === "ls" && partial.startsWith("-")) {
+      const matches = LS_FLAGS.filter((f) => f.startsWith(partial));
+      if (matches.length === 0) return;
+      if (matches.length === 1) {
+        setInput(before + matches[0] + " ");
+        return;
       }
-      setCommandAndClearSubline("");
+      const cp = commonPrefix(matches);
+      if (cp.length > partial.length) setInput(before + cp);
+      append(
+        <PromptLine path={promptPath} cmd={input} />,
+        <Suggestions items={matches} />,
+      );
+      return;
+    }
+
+    // Path-aware file/folder completion
+    const dirsOnly = cmd === "cd" || cmd === "ls";
+    const slashIdx = partial.lastIndexOf("/");
+    let dir = cwd;
+    let namePrefix = partial;
+    let pathPre = "";
+
+    if (slashIdx >= 0) {
+      pathPre = partial.slice(0, slashIdx + 1);
+      namePrefix = partial.slice(slashIdx + 1);
+      const resolved = resolvePath(cwd, partial.slice(0, slashIdx) || ".");
+      if (!resolved || !isDir(resolved)) return;
+      dir = resolved;
+    }
+
+    const candidates = dir.children
+      .filter((c) => !dirsOnly || isDir(c))
+      .filter((c) => c.filename.startsWith(namePrefix))
+      .map((c) => c.filename + (isDir(c) ? "/" : ""));
+
+    if (candidates.length === 0) return;
+    if (candidates.length === 1) {
+      const trail = candidates[0].endsWith("/") ? "" : " ";
+      setInput(before + pathPre + candidates[0] + trail);
+      return;
+    }
+    const cp = commonPrefix(candidates);
+    if (cp.length > namePrefix.length) setInput(before + pathPre + cp);
+    append(
+      <PromptLine path={promptPath} cmd={input} />,
+      <Suggestions items={candidates} />,
+    );
+  };
+
+  // ── Process command ────────────────────────────────────────────────
+
+  const processCommand = (raw: string) => {
+    const trimmed = raw.trim();
+    const prompt = <PromptLine path={getPath(cwd)} cmd={trimmed} />;
+
+    // Empty enter → show prompt line
+    if (!trimmed) {
+      append(prompt);
+      return;
+    }
+
+    setHistory((prev) => [...prev, trimmed]);
+    setHistIdx(-1);
+
+    const parts = trimmed.split(/\s+/);
+    const cmd = parts[0].toLowerCase();
+    const args = parts.slice(1);
+
+    // ── ls ───────────────────────────────────────────────────────────
+
+    if (cmd === "ls") {
+      const flags = new Set<string>();
+      let target: string | null = null;
+      for (const a of args) {
+        if (a.startsWith("-")) {
+          for (const ch of a.slice(1)) flags.add(ch);
+        } else {
+          target = a;
+        }
+      }
+
+      const showAll = flags.has("a");
+      const showLong = flags.has("l");
+
+      let dir = cwd;
+      if (target) {
+        const resolved = resolvePath(cwd, target);
+        if (!resolved) {
+          append(
+            prompt,
+            <Err msg={`ls: ${target}: No such file or directory`} />,
+          );
+          return;
+        }
+        if (!isDir(resolved)) {
+          append(prompt, <span>{resolved.filename}</span>);
+          return;
+        }
+        dir = resolved;
+      }
+
+      if (showLong) {
+        const lines: ReactNode[] = [prompt];
+        if (showAll) {
+          lines.push(
+            <div key="dot" className="flex gap-3">
+              <span className="text-muted-foreground shrink-0">drwxr-xr-x</span>
+              <span className="shrink-0">aksheyd</span>
+              <span className="text-muted-foreground shrink-0 min-w-[130px]" />
+              <DirSpan name="." />
+            </div>,
+            <div key="dotdot" className="flex gap-3">
+              <span className="text-muted-foreground shrink-0">drwxr-xr-x</span>
+              <span className="shrink-0">aksheyd</span>
+              <span className="text-muted-foreground shrink-0 min-w-[130px]" />
+              <DirSpan name=".." />
+            </div>,
+          );
+        }
+        dir.children.forEach((child) => {
+          const perm = isDir(child) ? "drwxr-xr-x" : "-rw-r--r--";
+          const date = getDate(child) || "—";
+          lines.push(
+            <div key={child.filename} className="flex gap-3">
+              <span className="text-muted-foreground shrink-0">{perm}</span>
+              <span className="shrink-0">aksheyd</span>
+              <span className="text-muted-foreground shrink-0 min-w-[130px]">
+                {date}
+              </span>
+              {isDir(child) ? (
+                <DirSpan name={child.filename} />
+              ) : (
+                <span>{child.filename}</span>
+              )}
+            </div>,
+          );
+        });
+        append(...lines);
+      } else {
+        const items: ReactNode[] = [];
+        if (showAll) {
+          items.push(
+            <DirSpan key="." name="." />,
+            <DirSpan key=".." name=".." />,
+          );
+        }
+        dir.children.forEach((child) => {
+          items.push(
+            isDir(child) ? (
+              <DirSpan key={child.filename} name={child.filename} />
+            ) : (
+              <span key={child.filename}>{child.filename}</span>
+            ),
+          );
+        });
+        append(
+          prompt,
+          <div className="flex flex-wrap gap-x-4 gap-y-0.5">{items}</div>,
+        );
+      }
+    }
+
+    // ── cd ────────────────────────────────────────────────────────────
+
+    else if (cmd === "cd") {
+      if (args.length === 0 || args[0] === "~") {
+        append(prompt);
+        setCwd(root);
+      } else {
+        const target = resolvePath(cwd, args[0]);
+        if (!target) {
+          append(prompt, <Err msg={`cd: ${args[0]}: No such directory`} />);
+        } else if (!isDir(target)) {
+          append(prompt, <Err msg={`cd: ${args[0]}: Not a directory`} />);
+        } else {
+          append(prompt);
+          setCwd(target);
+        }
+      }
+    }
+
+    // ── cat ───────────────────────────────────────────────────────────
+
+    else if (cmd === "cat") {
+      if (args.length === 0) {
+        append(prompt, <Err msg="cat: missing file operand" />);
+        return;
+      }
+      const target = resolvePath(cwd, args[0]);
+      if (!target) {
+        append(prompt, <Err msg={`cat: ${args[0]}: No such file`} />);
+        return;
+      }
+      if (isDir(target)) {
+        append(prompt, <Err msg={`cat: ${args[0]}: Is a directory`} />);
+        return;
+      }
+
+      const d = target.data!;
+      const box = (children: ReactNode) => (
+        <div className="border border-dashed rounded p-3 my-1 space-y-0.5">
+          {children}
+        </div>
+      );
+
+      if ("baseModel" in d) {
+        const m = d as Model;
+        append(
+          prompt,
+          box(
+            <>
+              <Field label="name" value={m.name} />
+              <Field label="desc" value={m.desc} />
+              <Field label="base" value={m.baseModel} />
+              <Field label="date" value={m.date} />
+              <Field label="link" value={<Link url={m.link} />} />
+            </>,
+          ),
+        );
+      } else if ("name" in d) {
+        const p = d as Project;
+        append(
+          prompt,
+          box(
+            <>
+              <Field label="name" value={p.name} />
+              <Field label="desc" value={p.desc} />
+              <Field label="date" value={p.date} />
+              <Field label="tech" value={p.tech.join(", ")} />
+              {p.link && <Field label="link" value={<Link url={p.link} />} />}
+              {p.repo && <Field label="repo" value={<Link url={p.repo} />} />}
+            </>,
+          ),
+        );
+      } else {
+        const c = d as Contribution;
+        append(
+          prompt,
+          box(
+            <>
+              <Field label="title" value={c.title} />
+              <Field label="project" value={`${c.org}/${c.project}`} />
+              <Field label="desc" value={c.desc} />
+              <Field label="type" value={c.type} />
+              <Field
+                label="status"
+                value={
+                  <span
+                    className={
+                      c.status === "Merged"
+                        ? "text-green-600 dark:text-green-400"
+                        : ""
+                    }
+                  >
+                    {c.status}
+                  </span>
+                }
+              />
+              <Field label="date" value={c.date} />
+              <Field label="tech" value={c.tech.join(", ")} />
+              <Field label="link" value={<Link url={c.link} />} />
+            </>,
+          ),
+        );
+      }
+    }
+
+    // ── open ──────────────────────────────────────────────────────────
+
+    else if (cmd === "open") {
+      if (args.length === 0) {
+        append(prompt, <Err msg="open: missing file operand" />);
+        return;
+      }
+      const target = resolvePath(cwd, args[0]);
+      if (!target || !target.data) {
+        append(prompt, <Err msg={`open: ${args[0]}: No such file`} />);
+        return;
+      }
+      if (isDir(target)) {
+        append(prompt, <Err msg={`open: ${args[0]}: Is a directory`} />);
+        return;
+      }
+
+      const d = target.data;
+      let url: string | undefined;
+      if ("link" in d && d.link) url = d.link as string;
+      if (!url && "repo" in d) url = (d as Project).repo;
+
+      if (url) {
+        append(
+          prompt,
+          <span className="text-muted-foreground">
+            Opening {target.filename}...
+          </span>,
+        );
+        window.open(url, url.startsWith("/") ? "_self" : "_blank");
+      } else {
+        append(
+          prompt,
+          <Err msg={`open: no link available for ${target.filename}`} />,
+        );
+      }
+    }
+
+    // ── pwd ───────────────────────────────────────────────────────────
+
+    else if (cmd === "pwd") {
+      append(prompt, <span>{getPath(cwd)}</span>);
+    }
+
+    // ── whoami ────────────────────────────────────────────────────────
+
+    else if (cmd === "whoami") {
+      append(prompt, <span>aksheyd</span>);
+    }
+
+    // ── tree ──────────────────────────────────────────────────────────
+
+    else if (cmd === "tree") {
+      let target = cwd;
+      if (args.length > 0) {
+        const resolved = resolvePath(cwd, args[0]);
+        if (!resolved || !isDir(resolved)) {
+          append(prompt, <Err msg={`tree: ${args[0]}: Not a directory`} />);
+          return;
+        }
+        target = resolved;
+      }
+
+      const lines: string[] = ["."];
+      const walk = (node: FileNode, prefix: string) => {
+        node.children.forEach((child, i) => {
+          const last = i === node.children.length - 1;
+          const connector = last ? "└── " : "├── ";
+          const name = isDir(child) ? child.filename + "/" : child.filename;
+          lines.push(prefix + connector + name);
+          if (isDir(child))
+            walk(child, prefix + (last ? "    " : "│   "));
+        });
+      };
+      walk(target, "");
+
+      const dirCount = lines.filter((l) => l.endsWith("/")).length;
+      const fileCount = lines.length - 1 - dirCount;
+      lines.push(`\n${dirCount} directories, ${fileCount} files`);
+
+      append(
+        prompt,
+        <pre className="leading-relaxed text-xs">{lines.join("\n")}</pre>,
+      );
+    }
+
+    // ── clear ─────────────────────────────────────────────────────────
+
+    else if (cmd === "clear") {
+      setOutput([]);
+    }
+
+    // ── help ──────────────────────────────────────────────────────────
+
+    else if (cmd === "help") {
+      append(
+        prompt,
+        <div className="my-1 space-y-3">
+          <div>
+            <div className="text-muted-foreground mb-1">Navigation</div>
+            <div className="grid grid-cols-[150px_1fr] gap-y-0.5 ml-2">
+              <span>
+                <span className="text-yellow-600 dark:text-yellow-400">cd</span>{" "}
+                <span className="text-muted-foreground">[dir]</span>
+              </span>
+              <span>Change directory</span>
+              <span>
+                <span className="text-yellow-600 dark:text-yellow-400">ls</span>{" "}
+                <span className="text-muted-foreground">[-al] [dir]</span>
+              </span>
+              <span>List contents</span>
+              <span className="text-yellow-600 dark:text-yellow-400">pwd</span>
+              <span>Print working directory</span>
+              <span>
+                <span className="text-yellow-600 dark:text-yellow-400">
+                  tree
+                </span>{" "}
+                <span className="text-muted-foreground">[dir]</span>
+              </span>
+              <span>Show directory tree</span>
+            </div>
+          </div>
+          <div>
+            <div className="text-muted-foreground mb-1">Files</div>
+            <div className="grid grid-cols-[150px_1fr] gap-y-0.5 ml-2">
+              <span>
+                <span className="text-yellow-600 dark:text-yellow-400">cat</span>{" "}
+                <span className="text-muted-foreground">&lt;file&gt;</span>
+              </span>
+              <span>Show file details</span>
+              <span>
+                <span className="text-yellow-600 dark:text-yellow-400">
+                  open
+                </span>{" "}
+                <span className="text-muted-foreground">&lt;file&gt;</span>
+              </span>
+              <span>Open link in browser</span>
+            </div>
+          </div>
+          <div>
+            <div className="text-muted-foreground mb-1">Social</div>
+            <div className="grid grid-cols-[150px_1fr] gap-y-0.5 ml-2">
+              {socialAccounts.map((a) => (
+                <React.Fragment key={a.name}>
+                  <span className="text-yellow-600 dark:text-yellow-400">
+                    {a.name}
+                  </span>
+                  <span className="text-muted-foreground">
+                    Open my {a.pretty}
+                  </span>
+                </React.Fragment>
+              ))}
+            </div>
+          </div>
+          <div>
+            <div className="text-muted-foreground mb-1">Other</div>
+            <div className="grid grid-cols-[150px_1fr] gap-y-0.5 ml-2">
+              <span className="text-yellow-600 dark:text-yellow-400">
+                whoami
+              </span>
+              <span>Who am I?</span>
+              <span className="text-yellow-600 dark:text-yellow-400">
+                clear
+              </span>
+              <span>Clear terminal</span>
+              <span className="text-yellow-600 dark:text-yellow-400">help</span>
+              <span>Show this message</span>
+              <span className="text-yellow-600 dark:text-yellow-400">exit</span>
+              <span>Return to homepage</span>
+            </div>
+          </div>
+        </div>,
+      );
+    }
+
+    // ── exit ──────────────────────────────────────────────────────────
+
+    else if (cmd === "exit") {
+      append(prompt);
+      window.location.href = "/";
+    }
+
+    // ── social commands ──────────────────────────────────────────────
+
+    else if (socialMap.has(cmd)) {
+      const acct = socialMap.get(cmd)!;
+      append(
+        prompt,
+        <span className="text-muted-foreground">
+          Opening {acct.pretty}...
+        </span>,
+      );
+      window.open(acct.website, "_blank");
+    }
+
+    // ── unknown command ──────────────────────────────────────────────
+
+    else {
+      append(prompt, <Err msg={`command not found: ${cmd}`} />);
+    }
+  };
+
+  // ── Key handler ────────────────────────────────────────────────────
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      processCommand(input);
+      setInput("");
+    } else if (e.key === "Tab") {
+      e.preventDefault();
+      handleTab();
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
-      if (history.length > 0 && historyIndex < history.length - 1) {
-        const newIndex: number = historyIndex + 1;
-        setHistoryIndex(newIndex);
-        setCommandAndClearSubline(history[history.length - 1 - newIndex]);
+      if (history.length > 0 && histIdx < history.length - 1) {
+        const i = histIdx + 1;
+        setHistIdx(i);
+        setInput(history[history.length - 1 - i]);
       }
     } else if (e.key === "ArrowDown") {
       e.preventDefault();
-
-      if (historyIndex >= 0) {
-        const newIndex = historyIndex - 1;
-        setHistoryIndex(newIndex);
-        if (newIndex === -1) {
-          setCommandAndClearSubline("");
-        } else {
-          setCommandAndClearSubline(history[history.length - 1 - newIndex]);
-        }
+      if (histIdx > 0) {
+        const i = histIdx - 1;
+        setHistIdx(i);
+        setInput(history[history.length - 1 - i]);
+      } else if (histIdx === 0) {
+        setHistIdx(-1);
+        setInput("");
       }
+    } else if (e.ctrlKey && e.key === "c") {
+      e.preventDefault();
+      append(<PromptLine path={promptPath} cmd={input + "^C"} />);
+      setInput("");
+      setHistIdx(-1);
     } else if (e.ctrlKey && e.key === "u") {
       e.preventDefault();
-
-      setHistoryIndex(-1);
-      setCommandAndClearSubline("");
-    } else if (e.ctrlKey && e.key === "c") {
-      if (!command) {
-        return;
-      }
-      const cmd = command.trim().toLowerCase();
-
-      if (cmd) {
-        setHistory((prev) => [...prev, cmd]);
-        setHistoryIndex(-1);
-        setOutput([...output, `${currentFolder.filename} $ ${cmd}`]);
-      }
-      setCommandAndClearSubline("");
-    } else if (e.key === "Tab") {
+      setInput("");
+    } else if (e.ctrlKey && e.key === "l") {
       e.preventDefault();
-      if (!command || !command.trim()) {
-        setCommandAndClearSubline(command + "  ");
-        return;
-      }
-
-      const input = command.toLowerCase().trim().split(/\s+/);
-      const cmd = input[0];
-      const args = input.slice(1);
-
-      const result = autocompleteForCommand(cmd, args, currentFolder, command);
-
-      if (result.completion) {
-        setCommandAndClearSubline(result.completion);
-      } else if (result.suggestions.length > 0) {
-        setSublineText(result.suggestions.join("\n"));
-      }
-    }
-  };
-
-  // actually handle what command was entered
-  const processCommand = (cmd: string) => {
-    let newOutput: string[] = [...output, `${currentFolder.filename} $ ${cmd}`];
-
-    // --- ls commands ---
-    if (cmd === "ls") {
-      newOutput.push(
-        currentFolder.children.map((child) => child.filename).join(" "),
-      );
-    } else if (cmd.startsWith("ls ")) {
-      const subcommand = cmd.split(" ")[1].trim();
-
-      if (subcommand === "-a") {
-        newOutput.push(".");
-        newOutput.push("..");
-        newOutput.push(".lit");
-        currentFolder.children.forEach((child) => {
-          newOutput.push(child.filename);
-        });
-      } else if (subcommand === "-l") {
-        currentFolder.children.map((project) => {
-          const permission: string =
-            perm_types[Math.floor(Math.random() * perm_types.length)];
-          const type: number = Math.floor(Math.random() * 30);
-          const size: number = Math.floor(Math.random() * 600);
-
-          newOutput.push(
-            `${permission}  ${type} aksheydeokule  staff  ${size} aksheydeokule staff ${project.filename}`,
-          );
-        });
-      } else {
-        const files = currentFolder.children.filter(
-          (c) => c.data === undefined,
-        );
-
-        const folderName = subcommand;
-        const project = files.find((p) => p.filename === folderName);
-        if (project) {
-          newOutput.push(
-            project.children.map((child) => child.filename).join(" "),
-          );
-        } else {
-          newOutput.push(`folder not found: ${folderName}`);
-        }
-      }
-    }
-    // -- cd commands ---
-    else if (
-      cmd === "cd" ||
-      cmd === "cd .." ||
-      (cmd.startsWith("cd ") &&
-        cmd.split(" ").filter(Boolean).join(" ") === "cd ..")
-    ) {
-      if (currentFolder.filename !== "root") {
-        if (currentFolder.parent) {
-          setCurrentFolder(currentFolder.parent);
-        } else {
-          console.error(
-            `filenode ${currentFolder.filename} has no parent but is not root.`,
-          );
-        }
-      }
-    } else if (cmd.startsWith("cd ")) {
-      const reducedCmd = cmd.split(" ").filter(Boolean).join(" ");
-      if (!(reducedCmd === "cd ." || reducedCmd === "cd ..")) {
-        const folders = currentFolder.children.filter(
-          (c) => c.data === undefined,
-        );
-        console.log(folders);
-
-        const folderName = reducedCmd.split(" ")[1].trim();
-        const folder = folders.find((p) => p.filename === folderName);
-        if (folder) {
-          setCurrentFolder(folder);
-        } else {
-          newOutput.push(`not a folder: ${folderName}`);
-        }
-      }
-    } else if (
-      cmd === "cd ." ||
-      (cmd.startsWith("cd ") &&
-        cmd.split(" ").filter(Boolean).join(" ") === "cd .")
-    ) {
-      // do nothing
-    }
-    // --- social network commands ---
-    else if (socials.has(cmd)) {
-      const acct = socialAccounts.find((s) => s.name === cmd);
-      if (!acct) {
-        return;
-      }
-
-      newOutput.push(`opening my ${acct.pretty}`);
-      window.open(acct.website);
-
-      // --- utility commands ---
-    } else if (cmd === "clear") {
       setOutput([]);
-      return;
-    } else if (cmd === "exit") {
-      window.location.href = "/";
-      return;
-    } else if (cmd === "help") {
-      newOutput.push(helpDocString);
-    } else if (cmd === "cat") {
-      newOutput.push("please specify which project to inspect");
     }
-    // -- cat commands ---
-    else if (cmd.startsWith("cat ")) {
-      const subcommand = cmd.split(" ")[1].trim();
-
-      const files = currentFolder.children.filter(
-        (c) => c.data !== undefined && c.data !== null,
-      );
-
-      const fileName = subcommand;
-      const file = files.find((f) => {
-        const data = f.data;
-        if (data && "name" in data) {
-          return (data as Project | Model).name === fileName;
-        } else if (data && "project" in data) {
-          return (data as Contribution).project === fileName;
-        }
-        return false;
-      });
-
-      if (file) {
-        const data = file.data;
-        // Check if it's a project, contribution, or model
-        if (data && "name" in data && "tech" in data) {
-          // It's a Project
-          const project = data as Project;
-          newOutput.push(
-            `name: ${project.name}`,
-            `desc: ${project.desc}`,
-            `date: ${project.date}`,
-            `tech: ${project.tech.join(", ")}`,
-            `url: ${project.link}`,
-            ...(project.repo ? [`repo: ${project.repo}`] : []),
-          );
-        } else if (data && "name" in data && "baseModel" in data) {
-          // It's a Model
-          const model = data as Model;
-          newOutput.push(
-            `name: ${model.name}`,
-            `desc: ${model.desc}`,
-            `base model: ${model.baseModel}`,
-            `link: ${model.link}`,
-          );
-        } else {
-          // It's a Contribution
-          const contrib = data as Contribution;
-          newOutput.push(
-            `title: ${contrib.title}`,
-            `project: ${contrib.org}/${contrib.project}`,
-            `desc: ${contrib.desc}`,
-            `type: ${contrib.type}`,
-            `status: ${contrib.status}`,
-            `date: ${contrib.date}`,
-            `tech: ${contrib.tech.join(", ")}`,
-            `link: ${contrib.link}`,
-          );
-        }
-      } else {
-        newOutput.push(`file not found: ${fileName}`);
-      }
-      // --- open commands ---
-    } else if (cmd === "open") {
-      newOutput.push("please specify which file to open");
-    } else if (cmd.startsWith("open ")) {
-      const subcommand = cmd.split(" ")[1].trim();
-
-      // Try to find as project first
-      const projectToOpen = projects.find((proj) => proj.name === subcommand);
-      if (projectToOpen) {
-        if (!projectToOpen.repo && !projectToOpen.link) {
-          newOutput.push("apologies, there is no link for this project yet");
-        } else if (projectToOpen.link) {
-          window.open(projectToOpen.link, "_blank");
-        } else if (projectToOpen.repo) {
-          window.open(projectToOpen.repo, "_blank");
-        }
-        setOutput(newOutput);
-        return;
-      }
-
-      // Try to find as model
-      const modelToOpen = models.find((model) => model.name === subcommand);
-      if (modelToOpen) {
-        window.open(modelToOpen.link, "_blank");
-        setOutput(newOutput);
-        return;
-      }
-
-      // Try to find as contribution
-      const contribToOpen = contributions.find(
-        (contrib) => contrib.project === subcommand,
-      );
-      if (contribToOpen) {
-        window.open(contribToOpen.link, "_blank");
-        setOutput(newOutput);
-        return;
-      }
-
-      newOutput.push(`file not found: ${subcommand}`);
-    } else {
-      newOutput.push(`command not found: ${cmd}`);
-    }
-
-    setOutput(newOutput);
   };
+
+  // ── Render ─────────────────────────────────────────────────────────
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 h-[calc(100vh-3.5rem)] w-full border-l border-r border-b border-dashed">
-      {/* Terminal Section (75%) */}
-      <div className="cols-start-1 h-full overflow-y-auto">
-        <div className="h-full p-4 font-mono text-xs">
-          <div className="space-y-1">
+    <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] h-[calc(100vh-3.5rem)] w-full border-l border-r border-b border-dashed">
+      {/* Terminal */}
+      <div
+        className="h-full overflow-y-auto cursor-text"
+        onClick={() => inputRef.current?.focus()}
+      >
+        <div className="p-4 font-mono text-xs">
+          <div className="space-y-0.5">
             {output.map((line, i) => (
-              <pre key={i} className="whitespace-pre-wrap text-xs">
-                {line}
-              </pre>
+              <div key={i}>{line}</div>
             ))}
           </div>
-          <div className="flex items-center gap-2 mt-2 text-base sm:text-xs">
-            <span>{`${currentFolder.filename}`} $</span>
+
+          {/* Active prompt */}
+          <div className="flex items-center gap-1 mt-1 text-base sm:text-xs">
+            <span className="whitespace-nowrap mr-2">
+              {promptPath} $ 
+            </span>
             <input
+              ref={inputRef}
               type="text"
-              value={command}
-              onChange={(e) => setCommand(e.target.value)}
-              onKeyDown={handleCommand}
-              className="flex-1 bg-transparent outline-none text-[16px] sm:text-xs"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              className="flex-1 bg-transparent outline-none caret-current text-[16px] sm:text-xs"
               spellCheck={false}
               autoFocus
-              onFocus={handleFocus}
-              ref={inputElementRef}
+              autoComplete="off"
+              autoCapitalize="off"
+              aria-label="Terminal input"
             />
           </div>
-          <div ref={terminalEndRef} />
-          <pre>{sublineText}</pre>
+          <div ref={endRef} />
         </div>
       </div>
 
-      {/* Help Section (25%) */}
-      <div className="cols-start-2 h-full hidden lg:block p-4 border-l border-dashed font-mono overflow-y-auto">
-        <h2 className="text-xl font-bold mb-4">Guide</h2>
-        <div className="space-y-4">
+      {/* Guide panel */}
+      <div className="hidden lg:block h-full p-4 border-l border-dashed font-mono overflow-y-auto">
+        <h2 className="text-lg font-bold mb-4">Guide</h2>
+        <div className="space-y-4 text-xs">
           <div>
-            <h3 className="text-md font-semibold mb-1">About</h3>
-            <p className="text-xs mb-4">
-              Type unix-like commands to discover what I've built.
+            <h3 className="text-sm font-semibold mb-1">About</h3>
+            <p className="text-muted-foreground">
+              Navigate my projects using UNIX-style commands.
             </p>
           </div>
-
-          <div className="space-y-4">
-            <h3 className="text-md font-semibold mb-1">Example Usage</h3>
-            <ul className="list-disc list-inside text-xs space-y-1 mb-4">
-              <li>
-                <code>cd projects</code>
-              </li>
-              <li>
-                <code>cd web-dev</code>
-              </li>
-              <li>
-                <code>cat whats-up</code>
-              </li>
-              <li>
-                <code>open whats-up</code>
-              </li>
-            </ul>
-          </div>
-
           <div>
-            <h3 className="text-md font-semibold mb-1">Extras</h3>
-            <p className="text-xs">
-              Type <code>help</code> for all available commands
-            </p>
-            <p className="text-xs">
-              Type <code>clear</code> to reset the screen
-            </p>
-            <p className="text-xs">
-              Use <code>TAB</code> to auto-complete commands
-            </p>
+            <h3 className="text-sm font-semibold mb-2">Quick Start</h3>
+            <div className="space-y-1.5 text-muted-foreground">
+              <div>
+                <code className="text-foreground">ls</code> — see what&apos;s
+                here
+              </div>
+              <div>
+                <code className="text-foreground">cd projects</code> — enter a
+                folder
+              </div>
+              <div>
+                <code className="text-foreground">cd web-dev</code> — go deeper
+              </div>
+              <div>
+                <code className="text-foreground">cat whats-up</code> — inspect
+                a project
+              </div>
+              <div>
+                <code className="text-foreground">open whats-up</code> — open
+                its link
+              </div>
+              <div>
+                <code className="text-foreground">cd ..</code> — go back
+              </div>
+              <div>
+                <code className="text-foreground">tree</code> — see full
+                structure
+              </div>
+            </div>
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold mb-2">Tips</h3>
+            <div className="space-y-1.5 text-muted-foreground">
+              <div>
+                <code className="text-foreground">Tab</code> — autocomplete
+              </div>
+              <div>
+                <code className="text-foreground">↑ ↓</code> — command history
+              </div>
+              <div>
+                <code className="text-foreground">Ctrl+C</code> — cancel
+              </div>
+              <div>
+                <code className="text-foreground">Ctrl+L</code> — clear screen
+              </div>
+              <div>
+                <code className="text-foreground">help</code> — all commands
+              </div>
+            </div>
           </div>
         </div>
       </div>
