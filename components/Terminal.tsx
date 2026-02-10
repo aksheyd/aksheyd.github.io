@@ -43,16 +43,16 @@ webDevFolder.children.push(
 ); // personal-portfolio
 
 videoGamesFolder.children.push(
-  new FileNode(projects[3].name, videoGamesFolder, projects[3]),
+  new FileNode(projects[2].name, videoGamesFolder, projects[3]),
 ); // duelers-providence
 videoGamesFolder.children.push(
-  new FileNode(projects[4].name, videoGamesFolder, projects[4]),
+  new FileNode(projects[5].name, videoGamesFolder, projects[4]),
 ); // destroy-the-wormhole
 videoGamesFolder.children.push(
-  new FileNode(projects[5].name, videoGamesFolder, projects[5]),
+  new FileNode(projects[6].name, videoGamesFolder, projects[5]),
 ); // legend-of-zelda
 
-aiFolder.children.push(new FileNode(projects[2].name, aiFolder, projects[2])); // nba-mlp
+aiFolder.children.push(new FileNode(projects[4].name, aiFolder, projects[3])); // nba-mlp
 aiFolder.children.push(new FileNode(projects[6].name, aiFolder, projects[6])); // gemini-ai-asl-translator
 
 researchFolder.children.push(
