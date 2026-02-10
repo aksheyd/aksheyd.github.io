@@ -13,7 +13,7 @@ export default function BlogPage() {
   );
   return (
     <div className="min-h-[calc(100vh-3.5rem)] w-full flex justify-center border-l border-r border-b border-dashed">
-      <div className="max-w-3xl w-full px-6 py-10">
+      <div className="max-w-3xl lg:max-w-4xl w-full px-6 py-10">
         {posts.length === 0 ? (
           <div className="text-center py-12">
             <p className="font-serif text-muted-foreground">No posts yet.</p>
