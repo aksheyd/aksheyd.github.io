@@ -559,14 +559,14 @@ export default function Terminal() {
               </pre>
             ))}
           </div>
-          <div className="flex items-center gap-2 mt-2">
+          <div className="flex items-center gap-2 mt-2 text-base sm:text-xs">
             <span>{`${currentFolder.filename}`} $</span>
             <input
               type="text"
               value={command}
               onChange={(e) => setCommand(e.target.value)}
               onKeyDown={handleCommand}
-              className="flex-1 bg-transparent outline-none"
+              className="flex-1 bg-transparent outline-none text-[16px] sm:text-xs"
               spellCheck={false}
               autoFocus
               onFocus={handleFocus}
