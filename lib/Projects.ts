@@ -36,7 +36,7 @@ const projects: Project[] = [
   {
     name: "nba-mlp",
     desc: "Custom neural network to predict NBA championship winners based on team statistics. Features manual backpropagation implementation with 97.49% training accuracy and 96.25% validation accuracy on 797 team-seasons from 1996-2024.",
-    date: "2024",
+    date: "May 2024",
     repo: "https://github.com/aksheyd/NBAMLP",
     tech: ["Python", "NumPy", "Neural Networks"],
     featured: true,
@@ -44,7 +44,7 @@ const projects: Project[] = [
   {
     name: "deep-ocean-research",
     desc: "AI-powered system generating scientifically plausible deep-sea species hypotheses using orchestrated CrewAI agents, research citation graphs, and real scientific literature from OpenAlex and Exa. Features React dashboard with live session tracking and citation DAG visualization.",
-    date: "2024",
+    date: "May 2025",
     repo: "https://github.com/aksheyd/deep-ocean-research",
     tech: ["Python", "React", "CrewAI", "OpenAlex", "GraphML"],
   },
@@ -72,7 +72,7 @@ const projects: Project[] = [
   {
     name: "personal-portfolio",
     desc: "Created using Next.js, React, and Typescript, featuring GSAP, tsParticles, Tailwind CSS, and more to come! Deployed via Github Pages.",
-    date: "November 2024 - March 2024",
+    date: "November 2024",
     link: "https://aksheyd.github.io",
     repo: "https://github.com/aksheyd/aksheyd.github.io",
     tech: ["Next.js", "React", "TypeScript", "Tailwind CSS"],
