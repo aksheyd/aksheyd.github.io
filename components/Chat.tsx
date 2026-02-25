@@ -158,6 +158,7 @@ export default function Chat() {
   const [engine, setEngine] = useState<MLCEngineInterface | null>(null);
   const [loadProgress, setLoadProgress] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loadError, setLoadError] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [generating, setGenerating] = useState(false);
@@ -174,6 +175,7 @@ export default function Chat() {
 
   const loadModel = async () => {
     setLoading(true);
+    setLoadError("");
     try {
       const { CreateMLCEngine } = await import("@mlc-ai/web-llm");
       const eng = await CreateMLCEngine(MODEL_ID, {
@@ -183,7 +185,7 @@ export default function Chat() {
       });
       setEngine(eng);
     } catch {
-      setLoadProgress(
+      setLoadError(
         "Failed to load model. Your device may not have enough memory.",
       );
     }
@@ -264,8 +266,17 @@ export default function Chat() {
       <div className={grid}>
         <div className="h-full flex items-center justify-center">
           <div className="text-center space-y-4 px-6">
-            {!loading ? (
+            {loading ? (
+              <p className="font-mono text-xs text-muted-foreground">
+                {loadProgress}
+              </p>
+            ) : (
               <>
+                {loadError && (
+                  <p className="font-mono text-xs text-red-500 mb-2">
+                    {loadError}
+                  </p>
+                )}
                 <div className="space-y-1">
                   <p className="font-mono text-sm">{MODEL_LABEL}</p>
                   <p className="font-mono text-sm">entirely in your browser</p>
@@ -274,13 +285,9 @@ export default function Chat() {
                   onClick={loadModel}
                   className="font-mono text-sm underline decoration-dotted underline-offset-4 hover:decoration-solid"
                 >
-                  load model
+                  {loadError ? "retry" : "load model"}
                 </button>
               </>
-            ) : (
-              <p className="font-mono text-xs text-muted-foreground">
-                {loadProgress}
-              </p>
             )}
           </div>
         </div>
