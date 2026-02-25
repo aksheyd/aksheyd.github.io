@@ -22,7 +22,7 @@ export default function BlogPage() {
                 className="group block px-6 md:px-10 py-6"
               >
                 <div className="flex items-baseline justify-between gap-4">
-                  <span className="font-serif group-hover:underline decoration-dotted underlinepn-offset-2">
+                  <span className="font-serif group-hover:underline decoration-dotted underline-offset-2">
                     {post.title}
                   </span>
                   <span className="font-mono text-xs text-muted-foreground shrink-0">
