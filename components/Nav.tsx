@@ -38,6 +38,11 @@ export default function Nav() {
           </a>
         </Button>
         <Button variant="link">
+          <a href="/chat" target="">
+            <span className="font-mono text-sm">Chat</span>
+          </a>
+        </Button>
+        <Button variant="link">
           <a href="/blog" target="">
             <span className="font-mono text-sm">Blog</span>
           </a>
