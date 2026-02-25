@@ -23,10 +23,10 @@ export default function Nav() {
   };
 
   return (
-    <div className="relative flex h-14 items-center gap-2 px-4 py-2 border border-dashed bg-muted/50">
-      <TerminalIcon className="absolute left-4 h-4 w-4" />
+    <div className="flex h-14 items-center px-4 py-2 border border-dashed bg-muted/50">
+      <TerminalIcon className="h-4 w-4 shrink-0" />
 
-      <div className="w-full flex justify-center items-center">
+      <div className="flex-1 flex justify-center items-center">
         <Button variant="link">
           <a href="/" target="">
             <span className="font-mono text-sm">Home</span>
@@ -49,7 +49,7 @@ export default function Nav() {
         </Button>
       </div>
 
-      <nav className="absolute right-10">
+      <nav className="shrink-0">
         <ModeToggle />
       </nav>
     </div>
