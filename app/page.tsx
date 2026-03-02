@@ -6,8 +6,8 @@ import RecentPosts from "@/components/RecentPosts";
 
 export default function HomePage() {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3">
-      <main className="col-span-2 min-h-[calc(100vh-3.5rem)] w-full border-l border-r border-b border-dashed bg-card overflow-hidden">
+    <div className="grid grid-cols-1 lg:grid-cols-3 h-[calc(100dvh-3.5rem)]">
+      <main className="col-span-2 h-full w-full border-l border-r border-b border-dashed bg-card overflow-hidden">
         <div className="mt-10 mx-6 md:mx-10">
           <div className="mb-6">
             <p className="text-sm">
