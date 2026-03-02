@@ -5,7 +5,7 @@ export default function BlogPage() {
   const sortedPosts = getAllPosts();
 
   return (
-    <main className="min-h-[calc(100vh-3.5rem)] border-l border-r border-b border-dashed bg-card">
+    <main className="h-[calc(100dvh-3.5rem)] overflow-y-auto border-l border-r border-b border-dashed bg-card">
       {sortedPosts.length === 0 ? (
         <p className="px-6 md:px-10 py-10 font-serif text-muted-foreground">
           No posts yet.

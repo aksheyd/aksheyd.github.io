@@ -770,7 +770,7 @@ export default function Terminal() {
   // ── Render ─────────────────────────────────────────────────────────
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] h-[calc(100vh-3.5rem)] w-full border-l border-r border-b border-dashed">
+    <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] h-[calc(100dvh-3.5rem)] w-full border-l border-r border-b border-dashed">
       {/* Terminal */}
       <div
         className="h-full overflow-y-auto cursor-text"

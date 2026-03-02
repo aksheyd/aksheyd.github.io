@@ -40,7 +40,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   return (
-    <div className="min-h-[calc(100vh-3.5rem)] w-full flex justify-center border-l border-r border-b border-dashed bg-card">
+    <div className="h-[calc(100dvh-3.5rem)] overflow-y-auto w-full flex justify-center border-l border-r border-b border-dashed bg-card">
       <article className="max-w-3xl w-full px-6 py-10">
         <Link
           href="/blog"
