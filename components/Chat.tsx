@@ -231,7 +231,7 @@ export default function Chat() {
   };
 
   const grid =
-    "grid grid-cols-1 lg:grid-cols-[1fr_300px] h-[calc(100vh-3.5rem)] w-full border-l border-r border-b border-dashed";
+    "grid grid-cols-1 lg:grid-cols-[1fr_300px] h-[calc(100dvh-3.5rem)] w-full border-l border-r border-b border-dashed";
 
   const sidebar = <Sidebar config={config} setConfig={setConfig} />;
 
