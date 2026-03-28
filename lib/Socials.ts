@@ -8,7 +8,7 @@ interface Account {
 const socialAccounts: Account[] = [
   {
     name: "x",
-    website: "https://x.com/_aksheyd",
+    website: "https://x.com/aksheyd",
     pretty: "X",
     spacing: "                 ",
   },
