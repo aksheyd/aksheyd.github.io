@@ -23,18 +23,20 @@ export default function HomePage() {
               socials
             </h2>
             <ul className="">
-              {socialAccounts.map((account) => (
-                <li key={account.name}>
-                  <a
-                    href={account.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs underline decoration-dotted decoration-offset-2 hover:decoration-solid"
-                  >
-                    {account.pretty}
-                  </a>
-                </li>
-              ))}
+              {socialAccounts
+                .filter((account) => account.name !== "huggingface")
+                .map((account) => (
+                  <li key={account.name}>
+                    <a
+                      href={account.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs underline decoration-dotted decoration-offset-2 hover:decoration-solid"
+                    >
+                      {account.pretty}
+                    </a>
+                  </li>
+                ))}
             </ul>
           </div>
 
