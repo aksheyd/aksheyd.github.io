@@ -49,6 +49,9 @@
       "yaml@>=2.0.0 <2.9.0": "2.9.0",
       "mdast-util-to-hast@>=13.0.0 <13.2.1": "13.2.1",
       "postcss-selector-parser@>=6.1.0 <6.1.4": "6.1.4"
+    },
+    "patchedDependencies": {
+      "next@15.5.25": "patches/next@15.5.25.patch"
     }
   }
 }
