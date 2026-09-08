@@ -90,6 +90,9 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
         with:
+          # v4+ excludes dotfiles by default. Next export writes .nojekyll;
+          # without it GitHub Pages runs Jekyll and can drop _next assets.
+          include-hidden-files: true
           path: ./out
 
   # Deployment job
