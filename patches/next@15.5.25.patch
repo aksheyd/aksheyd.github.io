@@ -1,0 +1,212 @@
+diff --git a/dist/build/load-jsconfig.js b/dist/build/load-jsconfig.js
+index dcd6a8a1c3e8771ff7c5234c09632c590f492304..698b103c23daa0cb32ab69fbcfcc79f54e06951a 100644
+--- a/dist/build/load-jsconfig.js
++++ b/dist/build/load-jsconfig.js
+@@ -115,7 +115,10 @@ async function loadJsConfig(dir, config) {
+         typeScriptPath = deps.resolved.get('typescript');
+     } catch  {}
+     const tsConfigPath = _path.default.join(dir, config.typescript.tsconfigPath);
+-    const useTypeScript = Boolean(typeScriptPath && _fs.default.existsSync(tsConfigPath));
++    const tsConfigExists = _fs.default.existsSync(tsConfigPath);
++    const useTypeScript = Boolean(typeScriptPath && tsConfigExists);
++    // TypeScript 7 has no lib/typescript.js. Still read tsconfig so @/* paths resolve.
++    const useTsConfigWithoutApi = Boolean(!typeScriptPath && tsConfigExists);
+     let implicitBaseurl;
+     let jsConfig;
+     // jsconfig is a subset of tsconfig
+@@ -130,6 +133,13 @@ async function loadJsConfig(dir, config) {
+             compilerOptions: tsConfig.options
+         };
+         implicitBaseurl = _path.default.dirname(tsConfigPath);
++    } else if (useTsConfigWithoutApi) {
++        if (config.typescript.tsconfigPath !== 'tsconfig.json' && TSCONFIG_WARNED === false) {
++            TSCONFIG_WARNED = true;
++            _log.info(`Using tsconfig file: ${config.typescript.tsconfigPath}`);
++        }
++        jsConfig = parseJsonFile(tsConfigPath);
++        implicitBaseurl = _path.default.dirname(tsConfigPath);
+     }
+     const jsConfigPath = _path.default.join(dir, 'jsconfig.json');
+     if (!useTypeScript && _fs.default.existsSync(jsConfigPath)) {
+@@ -151,10 +161,10 @@ async function loadJsConfig(dir, config) {
+         }
+     }
+     return {
+-        useTypeScript,
++        useTypeScript: useTypeScript || useTsConfigWithoutApi,
+         jsConfig,
+         resolvedBaseUrl,
+-        jsConfigPath: useTypeScript ? tsConfigPath : _fs.default.existsSync(jsConfigPath) ? jsConfigPath : undefined
++        jsConfigPath: useTypeScript || useTsConfigWithoutApi ? tsConfigPath : _fs.default.existsSync(jsConfigPath) ? jsConfigPath : undefined
+     };
+ }
+ 
+diff --git a/dist/esm/build/load-jsconfig.js b/dist/esm/build/load-jsconfig.js
+index 98f60ed3cdfa54eb23b853d7351ebef950b74864..117017a1f8e07c663a079c1d473b8b5646539fde 100644
+--- a/dist/esm/build/load-jsconfig.js
++++ b/dist/esm/build/load-jsconfig.js
+@@ -48,7 +48,10 @@ export default async function loadJsConfig(dir, config) {
+         typeScriptPath = deps.resolved.get('typescript');
+     } catch  {}
+     const tsConfigPath = path.join(dir, config.typescript.tsconfigPath);
+-    const useTypeScript = Boolean(typeScriptPath && fs.existsSync(tsConfigPath));
++    const tsConfigExists = fs.existsSync(tsConfigPath);
++    const useTypeScript = Boolean(typeScriptPath && tsConfigExists);
++    // TypeScript 7 has no lib/typescript.js. Still read tsconfig so @/* paths resolve.
++    const useTsConfigWithoutApi = Boolean(!typeScriptPath && tsConfigExists);
+     let implicitBaseurl;
+     let jsConfig;
+     // jsconfig is a subset of tsconfig
+@@ -63,6 +66,13 @@ export default async function loadJsConfig(dir, config) {
+             compilerOptions: tsConfig.options
+         };
+         implicitBaseurl = path.dirname(tsConfigPath);
++    } else if (useTsConfigWithoutApi) {
++        if (config.typescript.tsconfigPath !== 'tsconfig.json' && TSCONFIG_WARNED === false) {
++            TSCONFIG_WARNED = true;
++            Log.info(`Using tsconfig file: ${config.typescript.tsconfigPath}`);
++        }
++        jsConfig = parseJsonFile(tsConfigPath);
++        implicitBaseurl = path.dirname(tsConfigPath);
+     }
+     const jsConfigPath = path.join(dir, 'jsconfig.json');
+     if (!useTypeScript && fs.existsSync(jsConfigPath)) {
+@@ -84,10 +94,10 @@ export default async function loadJsConfig(dir, config) {
+         }
+     }
+     return {
+-        useTypeScript,
++        useTypeScript: useTypeScript || useTsConfigWithoutApi,
+         jsConfig,
+         resolvedBaseUrl,
+-        jsConfigPath: useTypeScript ? tsConfigPath : fs.existsSync(jsConfigPath) ? jsConfigPath : undefined
++        jsConfigPath: useTypeScript || useTsConfigWithoutApi ? tsConfigPath : fs.existsSync(jsConfigPath) ? jsConfigPath : undefined
+     };
+ }
+ 
+diff --git a/dist/esm/lib/verify-typescript-setup.js b/dist/esm/lib/verify-typescript-setup.js
+index 0b8d5c098fe1c5a565390eacd44b0380f85f0e92..1d98a460b17ca53a85adbd5b416ccd4e5c699356 100644
+--- a/dist/esm/lib/verify-typescript-setup.js
++++ b/dist/esm/lib/verify-typescript-setup.js
+@@ -53,11 +53,54 @@ export async function verifyTypeScriptSetup({ dir, distDir, cacheDir, intentDirs
+             semver.gte(installedTypescriptVersion, '7.0.0-0', {
+                 includePrerelease: true
+             })) {
+-                throw Object.defineProperty(new CompileError(`TypeScript ${installedTypescriptVersion} is not supported by this version of Next.js. ` + `The TypeScript 7 native compiler does not provide the JavaScript compiler API that Next.js requires. ` + `Install TypeScript 6 (e.g. ${bold('npm install --save-dev typescript@^6')}) or upgrade to a Next.js v16.2.11 or later to get support for TypeScript 7.`), "__NEXT_ERROR_CODE", {
+-                    value: "E798",
+-                    enumerable: false,
+-                    configurable: true
++                // TypeScript 7 dropped the JS compiler API Next 15 uses. Stay on
++                // Next 15.5.25 and type-check with the installed tsc CLI instead.
++                await writeAppTypeDeclarations({
++                    baseDir: dir,
++                    distDir,
++                    imageImportsEnabled: !disableStaticImages,
++                    hasPagesDir,
++                    hasAppDir
+                 });
++                let result;
++                if (typeCheckPreflight) {
++                    const { spawnSync } = require('child_process');
++                    const tscBin = path.join(path.dirname(installedTypescriptPackageJsonPath), 'bin', 'tsc');
++                    const tsc = spawnSync(process.execPath, [
++                        tscBin,
++                        '--noEmit',
++                        '--pretty',
++                        'false',
++                        '--incremental',
++                        'false',
++                        '-p',
++                        resolvedTsConfigPath
++                    ], {
++                        cwd: dir,
++                        encoding: 'utf8'
++                    });
++                    if (tsc.error) {
++                        throw tsc.error;
++                    }
++                    if (tsc.status !== 0) {
++                        const output = `${tsc.stdout || ''}${tsc.stderr || ''}`.trim();
++                        throw Object.defineProperty(new CompileError(output || `tsc exited with status ${tsc.status}`), "__NEXT_ERROR_CODE", {
++                            value: "E394",
++                            enumerable: false,
++                            configurable: true
++                        });
++                    }
++                    result = {
++                        hasWarnings: false,
++                        inputFilesCount: 0,
++                        totalFilesCount: 0,
++                        incremental: false
++                    };
++                }
++                return {
++                    result,
++                    version: installedTypescriptVersion
++                };
+             }
+         }
+         if (((_deps_missing = deps.missing) == null ? void 0 : _deps_missing.length) > 0) {
+diff --git a/dist/lib/verify-typescript-setup.js b/dist/lib/verify-typescript-setup.js
+index 3e32a3c00311f2fccc39b06ba9b09ee96dc762d1..b2ec496d91722ec07663ab4f183bfc3bda505aea 100644
+--- a/dist/lib/verify-typescript-setup.js
++++ b/dist/lib/verify-typescript-setup.js
+@@ -109,11 +109,54 @@ async function verifyTypeScriptSetup({ dir, distDir, cacheDir, intentDirs, tscon
+             _semver.default.gte(installedTypescriptVersion, '7.0.0-0', {
+                 includePrerelease: true
+             })) {
+-                throw Object.defineProperty(new _compileerror.CompileError(`TypeScript ${installedTypescriptVersion} is not supported by this version of Next.js. ` + `The TypeScript 7 native compiler does not provide the JavaScript compiler API that Next.js requires. ` + `Install TypeScript 6 (e.g. ${(0, _picocolors.bold)('npm install --save-dev typescript@^6')}) or upgrade to a Next.js v16.2.11 or later to get support for TypeScript 7.`), "__NEXT_ERROR_CODE", {
+-                    value: "E798",
+-                    enumerable: false,
+-                    configurable: true
++                // TypeScript 7 dropped the JS compiler API Next 15 uses. Stay on
++                // Next 15.5.25 and type-check with the installed tsc CLI instead.
++                await (0, _writeAppTypeDeclarations.writeAppTypeDeclarations)({
++                    baseDir: dir,
++                    distDir,
++                    imageImportsEnabled: !disableStaticImages,
++                    hasPagesDir,
++                    hasAppDir
+                 });
++                let result;
++                if (typeCheckPreflight) {
++                    const { spawnSync } = require('child_process');
++                    const tscBin = _path.default.join(_path.default.dirname(installedTypescriptPackageJsonPath), 'bin', 'tsc');
++                    const tsc = spawnSync(process.execPath, [
++                        tscBin,
++                        '--noEmit',
++                        '--pretty',
++                        'false',
++                        '--incremental',
++                        'false',
++                        '-p',
++                        resolvedTsConfigPath
++                    ], {
++                        cwd: dir,
++                        encoding: 'utf8'
++                    });
++                    if (tsc.error) {
++                        throw tsc.error;
++                    }
++                    if (tsc.status !== 0) {
++                        const output = `${tsc.stdout || ''}${tsc.stderr || ''}`.trim();
++                        throw Object.defineProperty(new _compileerror.CompileError(output || `tsc exited with status ${tsc.status}`), "__NEXT_ERROR_CODE", {
++                            value: "E394",
++                            enumerable: false,
++                            configurable: true
++                        });
++                    }
++                    result = {
++                        hasWarnings: false,
++                        inputFilesCount: 0,
++                        totalFilesCount: 0,
++                        incremental: false
++                    };
++                }
++                return {
++                    result,
++                    version: installedTypescriptVersion
++                };
+             }
+         }
+         if (((_deps_missing = deps.missing) == null ? void 0 : _deps_missing.length) > 0) {
