@@ -21,7 +21,7 @@ export default function RecentPosts() {
         {posts.slice(0, 5).map((post) => (
           <li key={post.slug} className="text-xs">
             <Link
-              href={`/blog/${post.slug}`}
+              href={`/blog/${encodeURIComponent(post.slug)}`}
               className="hover:underline font-semibold text-base font-serif block"
             >
               {post.title}
