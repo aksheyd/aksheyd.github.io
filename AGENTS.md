@@ -4,6 +4,10 @@
 
 My personal portfolio website built with Next.js, React, TypeScript, Tailwind CSS, and Shadcn UI. Hosted on GitHub Pages as a static site with no server-side functionality. Features a UNIX-style terminal interface for portfolio navigation, an in-browser WebLLM chat, and MDX-based blog posts.
 
+## README
+
+Do not edit `README.md` unless the user explicitly asks to change it.
+
 ## Development Commands
 
 Use pnpm (`packageManager` is pinned in `package.json`).
