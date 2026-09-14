@@ -58,7 +58,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 8
+          version: 10
         if: steps.detect-package-manager.outputs.manager == 'pnpm'
 
       - name: Setup Node
@@ -83,6 +83,10 @@ jobs:
 
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
+
+      - name: Typecheck
+        run: pnpm typecheck
+        if: steps.detect-package-manager.outputs.manager == 'pnpm'
 
       - name: Build with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
