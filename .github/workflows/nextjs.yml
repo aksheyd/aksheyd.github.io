@@ -57,8 +57,6 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
-        with:
-          version: 10
         if: steps.detect-package-manager.outputs.manager == 'pnpm'
 
       - name: Setup Node
