@@ -1183,7 +1183,7 @@ var unityFramework = (() => {
       ) {
         return window.CSS.escape(id);
       }
-      return id.replace(/(#|\.|\+|\[|\]|\(|\)|\{|\})/g, "\\$1");
+      return id.replace(/\\/g, "\\\\").replace(/(#|\.|\+|\[|\]|\(|\)|\{|\})/g, "\\$1");
     }
     function jsCanvasSelector() {
       var canvasId = Module["canvas"] ? Module["canvas"].id : "unity-canvas";

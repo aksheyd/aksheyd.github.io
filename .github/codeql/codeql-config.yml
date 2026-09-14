@@ -1,0 +1,8 @@
+name: "CodeQL config"
+
+# Exclude Unity WebGL vendor builds from analysis. These are generated
+# third-party bundles and are not maintained as first-party application code.
+paths-ignore:
+  - public/unity
+  - public/unity2
+  - public/tempbuild

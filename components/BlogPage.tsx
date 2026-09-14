@@ -18,7 +18,7 @@ export default function BlogPage() {
               className="border-b border-dashed last:border-b-0"
             >
               <Link
-                href={`/blog/${post.slug}`}
+                href={`/blog/${encodeURIComponent(post.slug)}`}
                 className="group block px-6 md:px-10 py-6"
               >
                 <div className="flex items-baseline justify-between gap-4">
