@@ -19,10 +19,10 @@ export default function HomePage() {
           <hr className="border-dashed mb-6 -mx-6 md:-mx-10 w-[calc(100%+3rem)] md:w-[calc(100%+5rem)]" />
 
           <div className="mb-6">
-            <h2 className="text-xl text-brown-800 font-medium mb-1 font-serif">
+            <h2 className="text-xl font-medium mb-1 font-serif">
               socials
             </h2>
-            <ul className="">
+            <ul>
               {socialAccounts
                 .filter((account) => account.name !== "huggingface")
                 .map((account) => (
@@ -31,7 +31,7 @@ export default function HomePage() {
                       href={account.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs underline decoration-dotted decoration-offset-2 hover:decoration-solid"
+                      className="text-xs underline decoration-dotted underline-offset-2 hover:decoration-solid"
                     >
                       {account.pretty}
                     </a>
@@ -42,7 +42,7 @@ export default function HomePage() {
 
           <div>
             <h2 className="text-xl font-medium mb-2 font-serif">projects</h2>
-            <Button variant="link" size="icon" className="text-sm">
+            <Button variant="link" className="h-auto px-0 text-sm" asChild>
               <Link className="flex items-center gap-2" href="/terminal">
                 launch terminal <Arrow direction="right" />
               </Link>

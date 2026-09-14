@@ -4,7 +4,6 @@ interface Model {
   baseModel: string;
   date: string;
   link: string;
-  featured?: boolean;
 }
 
 const models: Model[] = [
@@ -14,7 +13,6 @@ const models: Model[] = [
     baseModel: "Qwen/Qwen3-32B-Finetome",
     date: "November 2025",
     link: "https://huggingface.co/aksheyd/qwen3-32b-finetome-sft",
-    featured: true,
   },
   {
     name: "llama-3.1-8b-instruct-no-robots",
@@ -22,7 +20,6 @@ const models: Model[] = [
     baseModel: "meta-llama/Meta-Llama-3.1-8B-Instruct",
     date: "November 2025",
     link: "https://huggingface.co/aksheyd/llama-3.1-8b-instruct-no-robots",
-    featured: true,
   },
   {
     name: "llama-3.1-8b-instruct-no-robots-mlx",
@@ -37,7 +34,6 @@ const models: Model[] = [
     baseModel: "meta-llama/Meta-Llama-3.1-8B",
     date: "November 2025",
     link: "https://huggingface.co/aksheyd/llama-3.1-8b-tulu3-sft",
-    featured: true,
   },
   {
     name: "llama-3.1-8b-tulu3-sft-mlx",
