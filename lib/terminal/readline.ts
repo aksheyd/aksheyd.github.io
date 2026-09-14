@@ -1,4 +1,4 @@
-export const PIN_SLACK = 5;
+const PIN_SLACK = 5;
 export const PASTE_CAP = 32;
 
 export function inputRangeSelected(el: HTMLInputElement | null): boolean {

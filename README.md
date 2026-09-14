@@ -1,10 +1,22 @@
 # personal portfolio website
 
-this is my static personal portfolio website built with next.js and some other cool utilities.
+Static personal site built with Next.js.
 
 ## features
 
 - unix-style terminal interface
-  - hosts some games and projects I've built
-- webLLM chat panel
+- in-browser WebLLM chat
 - mdx blog posts
+- playable Unity WebGL pages
+
+## develop
+
+```bash
+pnpm install
+pnpm dev
+```
+
+```bash
+pnpm typecheck
+pnpm build
+```

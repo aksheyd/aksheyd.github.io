@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
-import { cn } from "@/lib/Utils";
+import { cn } from "@/lib/utils";
 
 function Arrow({
   direction = "right",

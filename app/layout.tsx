@@ -12,7 +12,7 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: "Akshey's Portfolio",
-  description: "Akshey Deokules Portfolio",
+  description: "Akshey Deokule's portfolio",
   keywords: ["portfolio", "akshey", "deokule"],
 };
 

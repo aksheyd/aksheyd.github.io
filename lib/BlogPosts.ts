@@ -70,7 +70,7 @@ export function getPostBySlug(slug: string): BlogPost | null {
       tldr: data.tldr || "",
       content,
     };
-  } catch (error) {
+  } catch {
     return null;
   }
 }
