@@ -1,5 +1,8 @@
 import { FileNode } from "@/lib/FileSystem";
-import projects from "@/lib/Projects";
+import projects, {
+  PROJECT_CATEGORIES,
+  type ProjectCategory,
+} from "@/lib/Projects";
 import contributions from "@/lib/Contributions";
 import models from "@/lib/Models";
 import socialAccounts from "@/lib/Socials";
@@ -10,36 +13,21 @@ const contribFolder = new FileNode("contributions", root, undefined);
 const fineTunesFolder = new FileNode("fine-tunes", root, undefined);
 root.children.push(projFolder, contribFolder, fineTunesFolder);
 
-const videoGamesFolder = new FileNode("video-games", projFolder, undefined);
-const webDevFolder = new FileNode("web-dev", projFolder, undefined);
-const aiFolder = new FileNode("ai", projFolder, undefined);
-const researchFolder = new FileNode("research", projFolder, undefined);
-projFolder.children.push(
-  videoGamesFolder,
-  webDevFolder,
-  aiFolder,
-  researchFolder,
-);
+const categoryFolders = Object.fromEntries(
+  PROJECT_CATEGORIES.map((category) => {
+    const folder = new FileNode(category, projFolder, undefined);
+    projFolder.children.push(folder);
+    return [category, folder];
+  }),
+) as Record<ProjectCategory, FileNode>;
+
+projects.forEach((p) => {
+  const folder = categoryFolders[p.category];
+  folder.children.push(new FileNode(p.name, folder, p));
+});
 
 const openSourceFolder = new FileNode("open-source", contribFolder, undefined);
 contribFolder.children.push(openSourceFolder);
-
-const projectFolders: Record<string, FileNode> = {
-  "whats-up": webDevFolder,
-  "personal-portfolio": webDevFolder,
-  "duelers-providence": videoGamesFolder,
-  "destroy-the-wormhole": videoGamesFolder,
-  "legend-of-zelda": videoGamesFolder,
-  "easy-train": aiFolder,
-  "nba-mlp": aiFolder,
-  "gemini-ai-asl-translator": aiFolder,
-  "deep-ocean-research": researchFolder,
-};
-
-projects.forEach((p) => {
-  const folder = projectFolders[p.name];
-  if (folder) folder.children.push(new FileNode(p.name, folder, p));
-});
 
 contributions.forEach((c) =>
   openSourceFolder.children.push(new FileNode(c.project, openSourceFolder, c)),
