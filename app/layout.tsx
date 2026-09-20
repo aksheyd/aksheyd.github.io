@@ -11,9 +11,28 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Akshey's Portfolio",
-  description: "Akshey Deokule's portfolio",
+  metadataBase: new URL("https://aksheyd.github.io"),
+  title: {
+    default: "Akshey Deokule",
+    template: "%s · Akshey Deokule",
+  },
+  description:
+    "Akshey Deokule's portfolio — projects, games, and a UNIX-style terminal.",
   keywords: ["portfolio", "akshey", "deokule"],
+  openGraph: {
+    type: "website",
+    siteName: "Akshey Deokule",
+    title: "Akshey Deokule",
+    description:
+      "Akshey Deokule's portfolio — projects, games, and a UNIX-style terminal.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    creator: "@aksheyd",
+    title: "Akshey Deokule",
+    description:
+      "Akshey Deokule's portfolio — projects, games, and a UNIX-style terminal.",
+  },
 };
 
 export default function RootLayout({
