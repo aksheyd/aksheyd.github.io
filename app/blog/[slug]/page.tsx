@@ -1,4 +1,5 @@
 import { getPostBySlug, getAllPostSlugs } from "@/lib/BlogPosts";
+import { pageMetadata } from "@/lib/metadata";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
@@ -25,9 +26,10 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
     };
   }
 
+  const meta = pageMetadata(post.title, post.tldr);
   return {
-    title: post.title,
-    description: post.tldr,
+    ...meta,
+    openGraph: { ...meta.openGraph, type: "article" },
   };
 }
 

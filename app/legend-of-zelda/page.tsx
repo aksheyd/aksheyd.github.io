@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
 import GamePage from "@/components/GamePage";
 import { UnityEmbed } from "@/components/UnityEmbed";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
-  title: "legend of zelda",
-};
+export const metadata = pageMetadata(
+  "legend of zelda",
+  "The first NES dungeon rebuilt in Unity and C#.",
+);
 
 export default function LegendOfZeldaPage() {
   return (

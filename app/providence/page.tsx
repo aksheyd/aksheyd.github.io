@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import {
   Card,
   CardContent,
@@ -6,10 +5,12 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import React from "react";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
-  title: "dueler's providence",
-};
+export const metadata = pageMetadata(
+  "dueler's providence",
+  "A soulslike sword combat game set in ancient Japan, built in Unity.",
+);
 
 export default function ProvidencePage() {
   return (

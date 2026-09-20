@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
 import GamePage from "@/components/GamePage";
 import { UnityEmbed } from "@/components/UnityEmbed";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
-  title: "destroy the wormhole",
-};
+export const metadata = pageMetadata(
+  "destroy the wormhole",
+  "An endless space flight game built in Unity and C#.",
+);
 
 export default function DestroyTheWormholePage() {
   return (

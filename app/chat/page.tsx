@@ -1,9 +1,7 @@
-import type { Metadata } from "next";
 import Chat from "@/components/Chat";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
-  title: "chat",
-};
+export const metadata = pageMetadata("chat", "An LLM chat running entirely in your browser.");
 
 export default function Page() {
   return (
