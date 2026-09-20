@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import {
   Card,
   CardContent,
@@ -5,6 +6,10 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import React from "react";
+
+export const metadata: Metadata = {
+  title: "dueler's providence",
+};
 
 export default function ProvidencePage() {
   return (

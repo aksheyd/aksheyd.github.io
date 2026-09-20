@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
   }
 
   return {
-    title: `${post.title} - Akshey Deokule`,
+    title: post.title,
     description: post.tldr,
   };
 }

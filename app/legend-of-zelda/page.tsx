@@ -1,5 +1,10 @@
+import type { Metadata } from "next";
 import GamePage from "@/components/GamePage";
 import { UnityEmbed } from "@/components/UnityEmbed";
+
+export const metadata: Metadata = {
+  title: "legend of zelda",
+};
 
 export default function LegendOfZeldaPage() {
   return (
