@@ -30,3 +30,5 @@ stick to characters you can type on a keyboard: straight quotes, `...`, and `-`.
 ## seeing it locally
 
 open `index.html` in a browser, or run `python3 -m http.server` and go to http://localhost:8000.
+
+p.s. [whatsup](https://aksheyd.github.io/whatsup/) and [desfb](https://aksheyd.github.io/desfb/) live here too.
