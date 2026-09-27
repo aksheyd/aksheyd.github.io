@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-My personal portfolio website built with Next.js, React, TypeScript, Tailwind CSS, and Shadcn UI. Hosted on GitHub Pages as a static site with no server-side functionality. Features a UNIX-style terminal interface for portfolio navigation, an in-browser WebLLM chat, and MDX-based blog posts.
+My personal portfolio website built with Next.js, React, TypeScript, and Tailwind CSS. Hosted on GitHub Pages as a static site with no server-side functionality. One page: name, a short bio, social links, two essays, and a short list of work. Essays are MDX posts.
 
 ## README
 
@@ -40,70 +40,16 @@ pnpm typecheck
 
 **App Router** (`app/`)
 
-- `app/layout.tsx`: Root layout with theme provider, navigation, and font configuration (Inter + Playfair Display)
-- `app/page.tsx`: Landing page
-- `app/terminal/page.tsx`: Interactive terminal interface
-- `app/chat/page.tsx`: In-browser WebLLM chat
-- `app/blog/page.tsx`: Blog listing
-- `app/blog/[slug]/page.tsx`: Dynamic blog post pages using MDX
-- Game/project pages: `/destroy-the-wormhole`, `/legend-of-zelda`, `/providence`
+- `app/layout.tsx`: Root layout and font (Inter)
+- `app/page.tsx`: The site: name, bio, links, writing, and work
+- `app/blog/[slug]/page.tsx`: Essay pages using MDX
+- `app/sitemap.ts` and `app/robots.ts`: Static SEO files
 
 **Data Layer** (`lib/`)
 
-- `Projects.ts`: Projects with a `category` field (`web-dev`, `video-games`, `ai`, `research`)
-- `Contributions.ts`: Open source contributions
-- `Models.ts`: Fine-tuned models
-- `Socials.ts`: Social media account links
+- `Socials.ts`: GitHub, X, LinkedIn, and Hugging Face
 - `BlogPosts.ts`: File-system blog post retrieval using gray-matter
-- `FileSystem.ts`: `FileNode` class for the terminal tree
-- `terminal/fs.ts`: Builds the virtual file system from the data files
-- `terminal/readline.ts`: History, paste, and tab-complete helpers
-- `utils.ts`: `cn()` class-name helper
-
-**Components** (`components/`)
-
-- `Terminal.tsx`: Terminal emulator (input, history, keybindings)
-- `terminal/`: Command runner, tab completion, and display helpers
-- `Chat.tsx`: WebLLM chat panel
-- `Nav.tsx`: Global navigation bar
-- `BlogPage.tsx`: Blog listing
-- `RecentPosts.tsx`: Homepage post list
-- `GamePage.tsx` / `UnityEmbed.tsx`: Shared layout for playable Unity pages
-- `ThemeProvider.tsx`: Dark/light mode wrapper (next-themes)
-- `ui/`: Shadcn UI primitives actually in use (`button`, `arrow`, `mode-toggle`)
-
-### Terminal System
-
-The terminal implements a custom virtual file system with hierarchical navigation:
-
-**File System Structure:**
-
-```
-root/
-├── projects/
-│   ├── video-games/
-│   ├── web-dev/
-│   ├── ai/
-│   └── research/
-├── contributions/
-│   └── open-source/
-└── fine-tunes/
-```
-
-**Terminal Features:**
-
-- Commands: `ls`, `cd`, `cat`, `open`, `pwd`, `whoami`, `tree`, `clear`, `help`, `exit`, plus social media shortcuts
-- Autocomplete: Tab completion for commands, flags, and file/folder names
-- Command history: Arrow key navigation through previous commands
-- Data integration: Projects, contributions, and models mapped to file nodes with metadata
-
-**Key Implementation Details:**
-
-- `FileNode` class represents both directories and files
-- Files with `data` property contain project/contribution/model metadata
-- Folders have `data === undefined` and contain `children`
-- Project files are placed from `Project.category` in `lib/terminal/fs.ts`
-- Social commands are populated from `Socials.ts`
+- `metadata.ts`: Shared title and description helper for essays
 
 ### Blog System
 
@@ -132,10 +78,8 @@ interface BlogPost {
 
 ### Styling
 
-- **Tailwind CSS v3**: Utility-first styling. Color tokens are oklch CSS variables mapped as `var(--token)` (not `hsl(var(--token))`).
-- **Shadcn UI**: Component library built on Radix UI primitives
-- **Fonts**: Inter (body), Playfair Display (`font-serif` headings)
-- **Theme**: Dark/light mode support via `next-themes` with system preference detection
+- **Tailwind CSS v3**: Utility-first styling
+- **Fonts**: Inter
 - **Typography**: `@tailwindcss/typography` for prose content
 
 ## Adding New Content
@@ -156,21 +100,12 @@ Your content here...
 
 2. Run `pnpm build` to generate static pages
 
-### Adding a Project
+### Adding work
 
-1. Add a project object to `lib/Projects.ts` with a `category` of `web-dev`, `video-games`, `ai`, or `research`
-2. The terminal file tree picks it up from `category`. Do not add a FileNode by hand.
-3. Optional: set `featured: true` to list it on the homepage
-4. Optional: create a dedicated page in `app/your-project/page.tsx`
-
-### Adding UI Components
-
-- Use Shadcn CLI to add components: `pnpm dlx shadcn@latest add [component]`
-- Components added to `components/ui/` with Tailwind styling
+Add a name, one sentence, and one URL to the work list in `app/page.tsx`. Do not add a route for that project in this repo.
 
 ## Design Principles
 
-- **Simplicity**: Clean, minimalist UI focused on functionality
+- **Simplicity**: One page. Name, bio, links, essays, work.
 - **Static-first**: No server dependencies, fully portable static site
-- **Terminal-centric**: Portfolio navigable via UNIX-style terminal interface
 - **Type-safe**: Full TypeScript coverage

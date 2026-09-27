@@ -1,19 +1,14 @@
-import { getPostBySlug, getAllPostSlugs } from "@/lib/BlogPosts";
+import { formatPostDate, getAllPostSlugs, getPostBySlug } from "@/lib/BlogPosts";
 import { pageMetadata } from "@/lib/metadata";
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
-import { Arrow } from "@/components/ui/arrow";
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
-  const slugs = getAllPostSlugs();
-  return slugs.map((slug) => ({
-    slug,
-  }));
+  return getAllPostSlugs().map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: BlogPostPageProps) {
@@ -42,34 +37,19 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   return (
-    <div className="h-[calc(100dvh-3.5rem)] overflow-y-auto w-full flex justify-center border-l border-r border-b border-dashed bg-card">
-      <article className="max-w-3xl w-full px-6 py-10">
-        <Link
-          href="/blog"
-          className="hover:underline decoration-dotted underline-offset-2 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors"
-        >
-          <Arrow direction="left" />
-          Back to blog
-        </Link>
-
+    <main className="mx-auto max-w-xl px-6 py-16">
+      <article>
         <header className="mb-8">
-          <h1 className="text-4xl font-bold font-serif mb-3">{post.title}</h1>
-          <div className="space-y-2 text-sm text-muted-foreground">
-            <time dateTime={post.date}>
-              {new Date(post.date).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </time>
-            <p className="text-sm text-muted-foreground">{post.tldr}</p>
-          </div>
+          <h1 className="text-2xl">{post.title}</h1>
+          <time dateTime={post.date} className="mt-2 block text-neutral-600">
+            {formatPostDate(post.date)}
+          </time>
         </header>
 
-        <div className="prose prose-neutral dark:prose-invert max-w-none pb-16 prose-blockquote:before:content-none prose-blockquote:after:content-none [&_blockquote_p]:before:content-none [&_blockquote_p]:after:content-none">
+        <div className="prose prose-neutral max-w-none prose-blockquote:before:content-none prose-blockquote:after:content-none [&_blockquote_p]:before:content-none [&_blockquote_p]:after:content-none">
           <MDXRemote source={post.content} />
         </div>
       </article>
-    </div>
+    </main>
   );
 }

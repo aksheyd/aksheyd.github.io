@@ -89,6 +89,17 @@ export function getPostBySlug(slug: string): BlogPost | null {
   }
 }
 
+/** Calendar date from frontmatter, without a local-timezone day shift. */
+export function formatPostDate(date: string): string {
+  const value = /^\d{4}-\d{2}-\d{2}$/.test(date) ? `${date}T00:00:00Z` : date;
+  return new Date(value).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+}
+
 export function getAllPostSlugs(): string[] {
   const fileNames = fs.readdirSync(postsDirectory);
   return fileNames

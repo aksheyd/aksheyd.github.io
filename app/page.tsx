@@ -1,59 +1,101 @@
+import { formatPostDate, getAllPosts } from "@/lib/BlogPosts";
 import socialAccounts from "@/lib/Socials";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Arrow } from "@/components/ui/arrow";
-import RecentPosts from "@/components/RecentPosts";
+
+const socialOrder = ["github", "x", "linkedin", "huggingface"] as const;
+
+const socialLabels: Record<(typeof socialOrder)[number], string> = {
+  github: "GitHub",
+  x: "X",
+  linkedin: "LinkedIn",
+  huggingface: "Hugging Face",
+};
+
+const work = [
+  {
+    name: "desfb",
+    href: "https://aksheyd.github.io/desfb/",
+    sentence:
+      "Interactive companion for the Don Edwards San Francisco Bay National Wildlife Refuge.",
+  },
+  {
+    name: "easy-train",
+    href: "https://github.com/aksheyd/easy-train",
+    sentence: "Learning about training LLMs with SFT and RL.",
+  },
+  {
+    name: "Dueler's Providence",
+    href: "https://aksheyd.itch.io/providence",
+    sentence: "A soulslike sword combat game set in ancient Japan.",
+  },
+] as const;
 
 export default function HomePage() {
+  const posts = getAllPosts();
+  const socials = socialOrder.flatMap((name) => {
+    const account = socialAccounts.find((item) => item.name === name);
+    if (!account) {
+      return [];
+    }
+    return [{ name, href: account.website, label: socialLabels[name] }];
+  });
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 h-[calc(100dvh-3.5rem)]">
-      <main className="col-span-2 h-full w-full border-l border-r border-b border-dashed bg-card overflow-hidden">
-        <div className="mt-10 mx-6 md:mx-10">
-          <div className="mb-6">
-            <p className="text-sm">
-              hi, my name is akshey deokule. i love coding, a lot.
-            </p>
-            <p className="text-sm">currently coding at xAI.</p>
-          </div>
+    <main className="mx-auto max-w-xl px-6 py-16">
+      <h1 className="text-2xl">Akshey Deokule</h1>
+      <p className="mt-4 leading-relaxed">
+        I write software at xAI. I live in San Francisco.
+      </p>
+      <p className="mt-4">
+        {socials.map((account, index) => (
+          <span key={account.name}>
+            {index > 0 ? " / " : null}
+            <a
+              href={account.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-2"
+            >
+              {account.label}
+            </a>
+          </span>
+        ))}
+      </p>
 
-          <hr className="border-dashed mb-6 -mx-6 md:-mx-10 w-[calc(100%+3rem)] md:w-[calc(100%+5rem)]" />
+      <h2 className="mt-10 text-lg">Writing</h2>
+      <ul className="mt-3 space-y-2">
+        {posts.map((post) => (
+          <li key={post.slug}>
+            <Link
+              href={`/blog/${encodeURIComponent(post.slug)}`}
+              className="underline underline-offset-2"
+            >
+              {post.title}
+            </Link>
+            <span className="text-neutral-600">
+              {" "}
+              — {formatPostDate(post.date)}
+            </span>
+          </li>
+        ))}
+      </ul>
 
-          <div className="mb-6">
-            <h2 className="text-xl font-medium mb-1 font-serif">
-              socials
-            </h2>
-            <ul>
-              {socialAccounts
-                .filter((account) => account.name !== "huggingface")
-                .map((account) => (
-                  <li key={account.name}>
-                    <a
-                      href={account.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs underline decoration-dotted underline-offset-2 hover:decoration-solid"
-                    >
-                      {account.pretty}
-                    </a>
-                  </li>
-                ))}
-            </ul>
-          </div>
-
-          <div>
-            <h2 className="text-xl font-medium mb-2 font-serif">projects</h2>
-            <Button variant="link" className="h-auto px-0 text-sm" asChild>
-              <Link className="flex items-center gap-2" href="/terminal">
-                launch terminal <Arrow direction="right" />
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </main>
-
-      <div className="col-span-1 hidden lg:block">
-        <RecentPosts />
-      </div>
-    </div>
+      <h2 className="mt-10 text-lg">Work</h2>
+      <ul className="mt-3 space-y-3">
+        {work.map((item) => (
+          <li key={item.name}>
+            <a
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-2"
+            >
+              {item.name}
+            </a>
+            <span> — {item.sentence}</span>
+          </li>
+        ))}
+      </ul>
+    </main>
   );
 }

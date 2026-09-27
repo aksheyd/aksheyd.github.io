@@ -23,7 +23,7 @@ const socialAccounts: Account[] = [
   {
     name: "huggingface",
     website: "https://huggingface.co/aksheyd",
-    pretty: "HuggingFace",
+    pretty: "Hugging Face",
   },
 ];
 
