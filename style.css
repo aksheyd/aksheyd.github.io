@@ -1,0 +1,160 @@
+:root {
+  --bg: #f4f1ea;
+  --ink: #2a2724;
+  --quiet: #5c574f;
+  color-scheme: light;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141311;
+    --ink: #e4dfd6;
+    --quiet: #a8a197;
+    color-scheme: dark;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.page {
+  max-width: 34rem;
+  padding: 2.75rem clamp(1.25rem, 8vw, 6rem) 3rem;
+}
+
+.page:has(.essay) {
+  max-width: 66ch;
+}
+
+p {
+  margin: 0 0 0.85rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+strong,
+b,
+em,
+i {
+  font: inherit;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: color-mix(in srgb, currentColor 28%, transparent);
+  text-underline-offset: 0.14em;
+}
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 1px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.notes {
+  margin-top: 2rem;
+}
+
+.notes h2,
+footer {
+  font-size: 0.8125rem;
+  color: var(--quiet);
+}
+
+.notes h2 {
+  margin: 0 0 0.4rem;
+}
+
+.notes p {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 0.55rem;
+  font-size: 0.9375rem;
+}
+
+footer {
+  margin-top: 3.5rem;
+}
+
+footer a {
+  color: inherit;
+  margin-right: 0.9rem;
+}
+
+.notes time,
+.dateline {
+  color: var(--quiet);
+}
+
+.notes time {
+  white-space: nowrap;
+}
+
+.essay h1 {
+  margin-bottom: 0.35rem;
+  font-size: 1.5rem;
+}
+
+.dateline {
+  margin-bottom: 1.8rem;
+}
+
+.essay h2 {
+  margin: 1.7rem 0 0.4rem;
+  font-size: 1.25rem;
+}
+
+.essay p,
+.essay ul,
+.essay ol,
+.essay blockquote {
+  margin: 0 0 0.85rem;
+}
+
+.essay ul,
+.essay ol {
+  padding-left: 1.1rem;
+}
+
+.essay ul {
+  list-style: disc;
+}
+
+.essay ol {
+  list-style: decimal;
+}
+
+.essay blockquote p {
+  margin: 0;
+}
+
+.essay hr {
+  border: 0;
+  border-top: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
+  margin: 1.7rem 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  a:hover {
+    text-decoration-color: currentColor;
+  }
+}
