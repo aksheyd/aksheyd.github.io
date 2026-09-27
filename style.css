@@ -81,9 +81,13 @@ footer {
   color: var(--quiet);
 }
 
-.notes h2,
-.notes[open] > summary {
+.notes h2 {
   margin: 0 0 0.4rem;
+}
+
+.notes[open] > summary {
+  margin: 0;
+  padding-bottom: 0.85rem;
 }
 
 .notes summary {
@@ -112,6 +116,12 @@ footer {
 
 details.notes p {
   font-size: 0.8125rem;
+  margin: 0 0 0.85rem;
+  align-items: baseline;
+}
+
+details.notes p:last-child {
+  margin-bottom: 0;
 }
 
 footer {
