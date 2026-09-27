@@ -75,13 +75,32 @@ a {
 }
 
 .notes h2,
+.notes summary,
 footer {
   font-size: 0.8125rem;
   color: var(--quiet);
 }
 
-.notes h2 {
+.notes h2,
+.notes[open] > summary {
   margin: 0 0 0.4rem;
+}
+
+.notes summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.notes summary::-webkit-details-marker {
+  display: none;
+}
+
+.notes summary::after {
+  content: " [+]";
+}
+
+.notes[open] > summary::after {
+  content: " [-]";
 }
 
 .notes p {
@@ -89,6 +108,10 @@ footer {
   flex-wrap: wrap;
   column-gap: 0.55rem;
   font-size: 0.9375rem;
+}
+
+details.notes p {
+  font-size: 0.8125rem;
 }
 
 footer {
@@ -101,6 +124,7 @@ footer a {
 }
 
 .notes time,
+.notes span,
 .dateline {
   color: var(--quiet);
 }
