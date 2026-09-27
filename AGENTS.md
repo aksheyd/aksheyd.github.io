@@ -8,6 +8,8 @@ My personal portfolio website built with Next.js, React, TypeScript, Tailwind CS
 
 Do not edit `README.md` unless the user explicitly asks to change it.
 
+On origin, keep only `main` and `old-2026-09-26` unless Akshey specifies otherwise.
+
 ## Development Commands
 
 Use pnpm (`packageManager` is pinned in `package.json`).
