@@ -101,7 +101,6 @@ footer a {
 }
 
 .notes time,
-.notes span,
 .dateline {
   color: var(--quiet);
 }
