@@ -27,6 +27,10 @@ that makes `blog/my-post.html`, adds the post to the list on the homepage, and u
 
 stick to characters you can type on a keyboard: straight quotes, `...`, and `-`.
 
+## project sites
+
+projects like `whatsup` deploy from their own repos to `aksheyd.github.io/<repo>/`. add the slug to `PROJECTS` in `build.mjs` so it lands in `sitemap.xml`, and add its own sitemap to `robots.txt`.
+
 ## seeing it locally
 
 open `index.html` in a browser, or run `python3 -m http.server` and go to http://localhost:8000.
