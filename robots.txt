@@ -3,4 +3,5 @@ Allow: /
 
 Sitemap: https://aksheyd.github.io/sitemap.xml
 Sitemap: https://aksheyd.github.io/desfb/sitemap.xml
+Sitemap: https://aksheyd.github.io/fivebyfive/sitemap.xml
 Sitemap: https://aksheyd.github.io/whatsup/sitemap.xml
