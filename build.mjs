@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 
 const SITE = "https://aksheyd.github.io";
 const NAME = "Akshey Deokule";
-const PROJECTS = ["desfb", "fivebyfive", "whatsup"];
+const PROJECTS = ["desfb", "fivebyfive", "threejam", "whatsup"];
 
 process.chdir(dirname(fileURLToPath(import.meta.url)));
 
