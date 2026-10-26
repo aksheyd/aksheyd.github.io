@@ -29,7 +29,7 @@ stick to characters you can type on a keyboard: straight quotes, `...`, and `-`.
 
 ## project sites
 
-projects like `whatsup` deploy from their own repos to `aksheyd.github.io/<repo>/`. add the slug to `PROJECTS` in `build.mjs` so it lands in `sitemap.xml`, and add its own sitemap to `robots.txt`.
+projects like `whatsup` deploy from their own repos to `aksheyd.github.io/<repo>/`. each project keeps its own sitemap. add that sitemap to `robots.txt`. the portfolio sitemap lists the homepage and the writings.
 
 ## seeing it locally
 

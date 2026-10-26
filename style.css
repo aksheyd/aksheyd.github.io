@@ -82,7 +82,6 @@ a {
 }
 
 .notes h2,
-.notes summary,
 footer {
   font-size: 0.8125rem;
   color: var(--quiet);
@@ -92,43 +91,11 @@ footer {
   margin: 0 0 0.4rem;
 }
 
-.notes[open] > summary {
-  margin: 0;
-  padding-bottom: 0.85rem;
-}
-
-.notes summary {
-  list-style: none;
-  cursor: pointer;
-}
-
-.notes summary::-webkit-details-marker {
-  display: none;
-}
-
-.notes summary::after {
-  content: " [+]";
-}
-
-.notes[open] > summary::after {
-  content: " [-]";
-}
-
 .notes p {
   display: flex;
   flex-wrap: wrap;
   column-gap: 0.55rem;
   font-size: 0.9375rem;
-}
-
-details.notes p {
-  font-size: 0.8125rem;
-  margin: 0 0 0.85rem;
-  align-items: baseline;
-}
-
-details.notes p:last-child {
-  margin-bottom: 0;
 }
 
 footer {
@@ -141,7 +108,6 @@ footer a {
 }
 
 .notes time,
-.notes span,
 .dateline {
   color: var(--quiet);
 }

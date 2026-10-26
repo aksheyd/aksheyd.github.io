@@ -4,7 +4,6 @@ import { fileURLToPath } from "node:url";
 
 const SITE = "https://aksheyd.github.io";
 const NAME = "Akshey Deokule";
-const PROJECTS = ["desfb", "fivebyfive", "threejam", "whatsup"];
 
 process.chdir(dirname(fileURLToPath(import.meta.url)));
 
@@ -165,7 +164,6 @@ writeFileSync("index.html", index.replace(markers, `<!-- posts -->\n${list}\n<!-
 
 const urls = [
   `  <url>\n    <loc>${SITE}/</loc>\n  </url>`,
-  ...PROJECTS.map((slug) => `  <url>\n    <loc>${SITE}/${slug}/</loc>\n  </url>`),
   ...posts.map((post) => `  <url>\n    <loc>${SITE}/blog/${post.slug}</loc>\n    <lastmod>${post.date}</lastmod>\n  </url>`),
 ];
 writeFileSync(
